@@ -18,14 +18,14 @@
             <div class="input-box">
                 <span class="icon"><ion-icon name="mail"></ion-icon></span>
                 <label>Email</label>
-                <input type="email" placeholder="Enter Email..." required>
+                <input type="email" id="emailInput" placeholder="Enter Email..." required>
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="eye"></ion-icon></span>
                 <label>Password</label>
-                <input type="password" placeholder="Enter Password..." required>
+                <input type="password" id="passInput" placeholder="Enter Password..." required>
             </div>
-            <button type="submit">Login</button>
+            <button type="button" onclick="showResult()">Login</button>
             <div class="register-link">
                 <p>Didn't Have Account? <a href="#">Register</a></p>
             </div>  
@@ -34,7 +34,13 @@
     </div>
     </section>
 
+    <script src="login.js"></script>
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-    
+    <div class="popup" id="popup">
+    <div class="popup-box">
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">OK</button>
+    </div>
+</div>
 </body>
 </html>
