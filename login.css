@@ -1,0 +1,207 @@
+/* ===== IMPORT FONT ===== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* ===== RESET ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ===== LAYOUT ===== */
+section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Background blur image */
+section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("Assets/bg_log.jpeg") no-repeat center / cover;
+  filter: blur(10px);
+  transform: scale(1.12);
+  z-index: 0;
+}
+
+/* Dark overlay */
+section::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 25, 50, 0.45);
+  z-index: 1;
+}
+
+/* ===== LOGIN BOX ===== */
+.Login-box {
+  position: relative;
+  z-index: 2;
+  width: 420px;
+  padding: 44px 36px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== LOGO ===== */
+.logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+}
+
+/* ===== HEADING ===== */
+h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  text-align: center;
+  margin-bottom: 28px;
+  letter-spacing: -0.5px;
+}
+
+/* ===== FORM TABLE ===== */
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.form-table td {
+  padding: 0;
+  vertical-align: top;
+}
+
+/* ===== INPUT BOX ===== */
+.input-box {
+  position: relative;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.input-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.3px;
+}
+
+.input-box input {
+  width: 100%;
+  height: 48px;
+  background: rgba(255,255,255,0.92);
+  border: 2px solid transparent;
+  outline: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #1a2a3a;
+  padding: 0 44px 0 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-box input::placeholder {
+  color: #aab5c5;
+}
+
+.input-box input:focus {
+  border-color: #5bb8f5;
+  box-shadow: 0 0 0 3px rgba(91, 184, 245, 0.2);
+  background: white;
+}
+
+/* Icon inside input */
+.input-box .icon {
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  color: #aab5c5;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+button[type="submit"],
+button.btn-login {
+  width: 100%;
+  height: 48px;
+  background: #0d3055;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: white;
+  font-weight: 700;
+  margin-top: 8px;
+  display: block;
+  letter-spacing: 0.3px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+button[type="submit"]:hover,
+button.btn-login:hover {
+  background: #0a4a7a;
+}
+
+button[type="submit"]:active,
+button.btn-login:active {
+  transform: scale(0.98);
+}
+
+/* ===== REGISTER LINK ===== */
+.register-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.register-link p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+}
+
+.register-link p a {
+  color: #5bb8f5;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.register-link p a:hover {
+  text-decoration: underline;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 460px) {
+  .Login-box {
+    width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    border: none;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

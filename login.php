@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Login - P Info</title>
     <link rel="stylesheet" href="login.css" />
   </head>
 
   <body>
     <section>
       <div class="Login-box">
-        <form action="">
-          <img src="Assets/rmbg_logo.png" class="logo" />
+        <form action="login_proses.php" method="POST">
+          <img src="Assets/rmbg_logo.png" class="logo" alt="Logo P Info" />
           <h2>Login</h2>
           <table class="form-table">
             <tr>
@@ -19,12 +19,7 @@
               <td>
                 <div class="input-box">
                   <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                  <input
-                    type="email"
-                    id="emailInput"
-                    placeholder="Enter Email..."
-                    required
-                  />
+                  <input type="email" name="email" placeholder="Enter Email..." required />
                 </div>
               </td>
             </tr>
@@ -33,35 +28,24 @@
               <td>
                 <div class="input-box">
                   <span class="icon"><ion-icon name="eye"></ion-icon></span>
-                  <input
-                    type="password"
-                    id="passInput"
-                    placeholder="Enter Password..."
-                    required
-                  />
+                  <input type="password" name="password" placeholder="Enter Password..." required />
                 </div>
               </td>
             </tr>
             <tr>
               <td colspan="2">
-                <button type="button" onclick="showResult()">Login</button>
+                <button type="submit">Login</button>
               </td>
             </tr>
           </table>
           <div class="register-link">
-            <p>Didn't Have Account? <a href="#">Register</a></p>
+            <!-- ✅ FIX: Link diarahkan ke register.php -->
+            <p>Didn't Have Account? <a href="register.php">Register</a></p>
           </div>
         </form>
       </div>
     </section>
 
-    <script src="login.js"></script>
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-    <div class="popup" id="popup">
-      <div class="popup-box">
-        <p id="popupMessage"></p>
-        <button onclick="closePopup()">OK</button>
-      </div>
-    </div>
   </body>
 </html>
