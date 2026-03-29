@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
 
-/* RESET */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 body {
@@ -33,7 +32,7 @@ body {
   font-weight: 800;
 }
 
-.logo img, .logo-img {
+.logo-img {
   width: 36px;
   height: 36px;
   object-fit: contain;
@@ -49,7 +48,6 @@ body {
 
 .auth-buttons span { font-size: 14px; color: rgba(255,255,255,0.85); }
 
-/* Shared button/link style */
 .auth-buttons button,
 .auth-buttons a,
 .logout-btn {
@@ -65,7 +63,7 @@ body {
   transition: background 0.2s;
 }
 
-.login { background: rgba(255,255,255,0.12); color: white !important; border: 1px solid rgba(255,255,255,0.25) !important; }
+.login  { background: rgba(255,255,255,0.12); color: white !important; border: 1px solid rgba(255,255,255,0.25) !important; }
 .login:hover { background: rgba(255,255,255,0.22) !important; }
 .signup { background: white; color: #0d3055 !important; }
 .signup:hover { background: #e8f0fe; }
@@ -148,6 +146,22 @@ body {
 .card-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .card-body h3 { font-size: 15px; font-weight: 700; color: #0d1f35; }
 .card-meta { font-size: 13px; color: #5a7a99; display: flex; flex-direction: column; gap: 4px; }
+
+/* BADGES */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.badge-design      { background: #e8f0fe; color: #185FA5; }
+.badge-programming { background: #e6f4ea; color: #1e7e34; }
+.badge-hacking     { background: #fce8e6; color: #c0392b; }
+.badge-all         { background: #f0f4f9; color: #5a7a99; }
 
 .btn-detail {
   margin-top: auto;
@@ -255,7 +269,7 @@ body {
 }
 .organizer img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid white; }
 .organizer h4 { font-size: 14px; font-weight: 700; color: #0d1f35; margin-bottom: 3px; }
-.organizer p { font-size: 13px; color: #5a7a99; }
+.organizer p  { font-size: 13px; color: #5a7a99; }
 
 /* BOTTOM CTA */
 .bottom-cta {
@@ -265,7 +279,7 @@ body {
   text-align: center;
 }
 .bottom-cta h2 { font-size: clamp(22px, 3vw, 32px); font-weight: 800; margin-bottom: 12px; }
-.bottom-cta p { max-width: 500px; margin: 0 auto; line-height: 1.75; opacity: 0.8; font-size: 15px; }
+.bottom-cta p  { max-width: 500px; margin: 0 auto; line-height: 1.75; opacity: 0.8; font-size: 15px; }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {

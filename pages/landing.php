@@ -2,18 +2,33 @@
 session_start();
 include "../config/koneksi.php";
 
-$search   = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
-$category = isset($_GET['category']) ? $_GET['category'] : 'All';
-
-$query = "SELECT * FROM competitions WHERE 1=1";
-if (!empty($search)) $query .= " AND title LIKE '%$search%'";
+$search   = trim($_GET['search'] ?? '');
+$category = $_GET['category'] ?? 'All';
 
 $allowed_categories = ['Design', 'Programming', 'Hacking'];
-if ($category !== 'All' && in_array($category, $allowed_categories)) {
-    $query .= " AND category = '$category'";
+
+$sql    = "SELECT * FROM competitions WHERE 1=1";
+$types  = "";
+$params = [];
+
+if (!empty($search)) {
+    $sql    .= " AND title LIKE ?";
+    $types  .= "s";
+    $params[] = "%" . $search . "%";
 }
 
-$result = mysqli_query($koneksi, $query);
+if ($category !== 'All' && in_array($category, $allowed_categories)) {
+    $sql    .= " AND category = ?";
+    $types  .= "s";
+    $params[] = $category;
+}
+
+$stmt = mysqli_prepare($koneksi, $sql);
+if (!empty($params)) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+}
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -28,14 +43,14 @@ $result = mysqli_query($koneksi, $query);
 <header class="hero">
     <div class="navbar">
         <div class="logo">
-            <img src="../Assets/images/logo.jpeg" alt="logo" class="logo-img"> Info
+            <img src="../Assets/images/logo.jpeg" alt="logo" class="logo-img"> P Info
         </div>
         <div class="auth-buttons">
-            <?php if (isset($_SESSION['status']) && $_SESSION['status'] == "login"): ?>
+            <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
                 <span>Halo, <?php echo htmlspecialchars($_SESSION['user_email']); ?></span>
                 <a href="logout.php" class="logout-btn">Logout</a>
             <?php else: ?>
-                <button class="login" onclick="window.location.href='login.php'">Login</button>
+                <button class="login"  onclick="window.location.href='login.php'">Login</button>
                 <button class="signup" onclick="window.location.href='register.php'">Sign Up</button>
             <?php endif; ?>
         </div>
@@ -47,10 +62,10 @@ $result = mysqli_query($koneksi, $query);
             <div class="search-box">
                 <input type="text" name="search" id="searchInput" placeholder="Search..."
                     value="<?php echo htmlspecialchars($search); ?>"
-                    oninput="document.getElementById('filterForm').submit()">
+                    oninput="debounceSubmit()">
             </div>
             <select name="category" id="categoryFilter" onchange="document.getElementById('filterForm').submit()">
-                <option value="All"         <?php echo $category === 'All'         ? 'selected' : ''; ?>>Kategori</option>
+                <option value="All"         <?php echo $category === 'All'         ? 'selected' : ''; ?>>Semua Kategori</option>
                 <option value="Design"      <?php echo $category === 'Design'      ? 'selected' : ''; ?>>Design</option>
                 <option value="Programming" <?php echo $category === 'Programming' ? 'selected' : ''; ?>>Programming</option>
                 <option value="Hacking"     <?php echo $category === 'Hacking'     ? 'selected' : ''; ?>>Hacking</option>
@@ -68,19 +83,23 @@ $result = mysqli_query($koneksi, $query);
         ?>
         <div class="card">
             <img src="../Assets/images/<?php echo htmlspecialchars($row['image']); ?>"
-                 alt="<?php echo htmlspecialchars($row['title']); ?>">
+                 alt="<?php echo htmlspecialchars($row['title']); ?>"
+                 onerror="this.src='../Assets/images/logo.jpeg'">
             <div class="card-body">
+                <span class="badge badge-<?php echo strtolower(htmlspecialchars($row['category'])); ?>">
+                    <?php echo htmlspecialchars($row['category']); ?>
+                </span>
                 <h3><?php echo htmlspecialchars($row['title']); ?></h3>
                 <div class="card-meta">
                     <span>📍 <?php echo htmlspecialchars($row['location']); ?></span>
                     <span>📅 <?php echo htmlspecialchars($row['date_range']); ?></span>
                 </div>
                 <button class="btn-detail" onclick="openDetail(
-                    '<?php echo addslashes($row['title']); ?>',
-                    '../Assets/images/<?php echo addslashes($row['image']); ?>',
-                    '<?php echo addslashes($row['location']); ?>',
-                    '<?php echo addslashes($row['date_range']); ?>',
-                    '<?php echo addslashes($row['description']); ?>'
+                    '<?php echo addslashes(htmlspecialchars($row['title'])); ?>',
+                    '../Assets/images/<?php echo addslashes(htmlspecialchars($row['image'])); ?>',
+                    '<?php echo addslashes(htmlspecialchars($row['location'])); ?>',
+                    '<?php echo addslashes(htmlspecialchars($row['date_range'])); ?>',
+                    '<?php echo addslashes(htmlspecialchars($row['description'])); ?>'
                 )">More Detail</button>
             </div>
         </div>
@@ -94,6 +113,7 @@ $result = mysqli_query($koneksi, $query);
     </div>
 </section>
 
+<!-- Modal -->
 <div class="modal" id="detailModal">
     <div class="modal-content">
         <div class="close-btn" onclick="closeDetail()">✕</div>

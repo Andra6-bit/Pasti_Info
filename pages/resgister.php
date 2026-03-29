@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - P Info</title>
+    <title>Register - P Info</title>
     <link rel="stylesheet" href="../Assets/css/login.css">
     <style>
         .alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 14px; text-align: center; }
@@ -18,32 +18,43 @@
     <section>
         <div class="Login-box">
             <img src="../Assets/images/rmbg_logo.png" class="logo" alt="Logo P Info">
-            <h2>Login</h2>
+            <h2>Daftar Akun</h2>
 
+            <?php if (!empty($_GET['error'])): ?>
+                <div class="alert alert-error"><?php echo htmlspecialchars($_GET['error']); ?></div>
+            <?php endif; ?>
             <?php if (!empty($_GET['success'])): ?>
-                <div class="alert alert-success">Registrasi berhasil! Silakan login.</div>
+                <div class="alert alert-success">Registrasi berhasil! <a href="login.php" style="color:#86efac;font-weight:700;">Login sekarang</a></div>
             <?php endif; ?>
 
-            <form action="login_proses.php" method="POST">
+            <form action="register_proses.php" method="POST">
                 <div class="form-group">
                     <label>Email</label>
                     <div class="input-box">
                         <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                        <input type="email" name="email" placeholder="Masukkan email..." required>
+                        <input type="email" name="email" placeholder="Masukkan email..." required
+                               value="<?php echo htmlspecialchars($_GET['email'] ?? ''); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
                     <div class="input-box">
-                        <span class="icon"><ion-icon name="eye"></ion-icon></span>
+                        <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
                         <input type="password" name="password" placeholder="Masukkan password..." required>
                     </div>
                 </div>
-                <button type="submit">Login</button>
+                <div class="form-group">
+                    <label>Konfirmasi Password</label>
+                    <div class="input-box">
+                        <span class="icon"><ion-icon name="checkmark-circle"></ion-icon></span>
+                        <input type="password" name="confirm_password" placeholder="Ulangi password..." required>
+                    </div>
+                </div>
+                <button type="submit">Daftar Sekarang</button>
             </form>
 
             <div class="register-link">
-                <p>Belum punya akun? <a href="register.php">Daftar</a></p>
+                <p>Sudah punya akun? <a href="login.php">Login</a></p>
             </div>
         </div>
     </section>

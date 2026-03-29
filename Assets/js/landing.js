@@ -1,9 +1,4 @@
-/**
- * Logika Modal - P Info
- * Search & Filter sekarang dihandle oleh PHP (GET form)
- */
-
-// Buka modal detail
+// Modal
 function openDetail(title, image, location, date, description) {
     document.getElementById("modalTitle").innerText       = title;
     document.getElementById("modalImage").src             = image;
@@ -14,23 +9,25 @@ function openDetail(title, image, location, date, description) {
     document.body.style.overflow = "hidden";
 }
 
-// Tutup modal
 function closeDetail() {
     document.getElementById("detailModal").style.display = "none";
     document.body.style.overflow = "";
 }
 
-// Tutup modal jika klik di luar box
 window.onclick = function (event) {
     const modal = document.getElementById("detailModal");
-    if (event.target === modal) {
-        closeDetail();
-    }
+    if (event.target === modal) closeDetail();
 };
 
-// Tutup modal dengan tombol Escape
 document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-        closeDetail();
-    }
+    if (e.key === "Escape") closeDetail();
 });
+
+// Debounce search agar tidak submit setiap ketukan
+let debounceTimer;
+function debounceSubmit() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+        document.getElementById("filterForm").submit();
+    }, 500);
+}
