@@ -28,7 +28,7 @@ section::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: url("Assets/bg_log.jpeg") no-repeat center / cover;
+  background: url("../images/bg_log.jpeg") no-repeat center / cover;
   filter: blur(10px);
   transform: scale(1.12);
   z-index: 0;
