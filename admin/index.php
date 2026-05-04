@@ -1,7 +1,8 @@
 <?php
 session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login') {
-    header("Location: ../pages/login.php");
+// Perketat akses: harus login dan username harus admin
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_username'] ?? '') !== 'admin') {
+    header("Location: ../pages/auth.php?error=" . urlencode("Akses Ditolak! Khusus Admin."));
     exit();
 }
 include "../config/koneksi.php";

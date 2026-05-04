@@ -1,5 +1,5 @@
 <?php
-session_start();
+include "./session_check.php"; // Pastikan path filenya benar
 include "../config/koneksi.php";
 
 $search   = trim($_GET['search'] ?? '');
@@ -36,22 +36,25 @@ $result = mysqli_stmt_get_result($stmt);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Competition Info - P Info</title>
-    <link rel="stylesheet" href="../Assets/css/landing.css">
+    <link rel="stylesheet" href="../Assets/css/landing.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
 <header class="hero">
     <div class="navbar">
         <div class="logo">
-            <img src="../Assets/images/logo.jpeg" alt="logo" class="logo-img"> P Info
+            <img src="../Assets/images/logo_putih.svg" alt="logo" class="logo-img"> 
         </div>
         <div class="auth-buttons">
             <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
-                <span>Halo, <?php echo htmlspecialchars($_SESSION['user_email']); ?></span>
+                <span>Halo, <?php echo htmlspecialchars($_SESSION['user_username']); ?></span>
+                <?php if (isset($_SESSION['user_username']) && $_SESSION['user_username'] === 'admin'): ?>
+                    <a href="../admin/index.php" class="login" style="background: var(--accent); color: white !important;">Dashboard Admin</a>
+                <?php endif; ?>
                 <a href="logout.php" class="logout-btn">Logout</a>
             <?php else: ?>
-                <button class="login"  onclick="window.location.href='login.php'">Login</button>
-                <button class="signup" onclick="window.location.href='register.php'">Sign Up</button>
+                <button class="login"  onclick="window.location.href='auth.php'">Login</button>
+                <button class="signup" onclick="window.location.href='auth.php?tab=register'">Sign Up</button>
             <?php endif; ?>
         </div>
     </div>
@@ -84,7 +87,7 @@ $result = mysqli_stmt_get_result($stmt);
         <div class="card">
             <img src="../Assets/images/<?php echo htmlspecialchars($row['image']); ?>"
                  alt="<?php echo htmlspecialchars($row['title']); ?>"
-                 onerror="this.src='../Assets/images/logo.jpeg'">
+                 onerror="this.src='../Assets/images/logo_putih.svg'">
             <div class="card-body">
                 <span class="badge badge-<?php echo strtolower(htmlspecialchars($row['category'])); ?>">
                     <?php echo htmlspecialchars($row['category']); ?>
@@ -128,7 +131,7 @@ $result = mysqli_stmt_get_result($stmt);
         </div>
         <div class="modal-description" id="modalDescription"></div>
         <div class="organizer">
-            <img src="../Assets/images/logo.jpeg" alt="Organizer Logo">
+            <img src="../Assets/images/logo_putih.svg" alt="Organizer Logo">
             <div>
                 <h4>Diselenggarakan oleh EduNation</h4>
                 <p>Organisasi pendidikan nasional yang fokus pada pengembangan siswa Indonesia.</p>
@@ -143,5 +146,12 @@ $result = mysqli_stmt_get_result($stmt);
 </section>
 
 <script src="../Assets/js/landing.js"></script>
+<?php if (!isset($_SESSION['status']) || $_SESSION['status'] !== "login"): ?>
+<script>
+    setTimeout(function() {
+        window.location.href = "auth.php?error=" + encodeURIComponent("Waktu habis! Ayo login sekarang.");
+    }, 60000); // 60 detik
+</script>
+<?php endif; ?>
 </body>
 </html>

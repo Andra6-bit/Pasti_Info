@@ -3,11 +3,11 @@ session_start();
 include "../config/koneksi.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email    = mysqli_real_escape_string($koneksi, $_POST['email']);
+    $username = mysqli_real_escape_string($koneksi, $_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = mysqli_prepare($koneksi, "SELECT * FROM users WHERE email = ?");
-    mysqli_stmt_bind_param($stmt, "s", $email);
+    $stmt = mysqli_prepare($koneksi, "SELECT * FROM users WHERE username = ?");
+    mysqli_stmt_bind_param($stmt, "s", $username);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
@@ -15,17 +15,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = mysqli_fetch_assoc($result);
 
         if (password_verify($password, $user['password']) || $password === $user['password']) {
-            $_SESSION['user_id']    = $user['id'];
-            $_SESSION['user_email'] = $user['email'];
-            $_SESSION['status']     = "login";
+            $_SESSION['user_id']            = $user['id'];
+            $_SESSION['user_username']      = $user['username'];
+            unset($_SESSION['guest_start_time']);
+            $_SESSION['status']             = "login";
+            $_SESSION['last_activity']      = time();
 
             header("Location: landing.php");
             exit();
         } else {
-            echo "<script>alert('Email atau Password salah!'); window.location='login.php';</script>";
+            header("Location: auth.php?tab=login&error=" . urlencode("Username atau Password salah!"));
+            exit();
         }
     } else {
-        echo "<script>alert('Email atau Password salah!'); window.location='login.php';</script>";
+        header("Location: auth.php?tab=login&error=" . urlencode("Username atau Password tidak terdaftar!"));
+        exit();
     }
 }
 ?>
