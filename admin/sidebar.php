@@ -1,7 +1,7 @@
 <?php $current = basename($_SERVER['PHP_SELF']); ?>
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <img src="../Assets/images/logo.jpeg" alt="Logo"> P Info
+        <img src="../Assets/images/logo.jpeg" alt="Logo">
     </div>
     <nav>
         <a href="index.php" class="<?php echo $current === 'index.php' ? 'active' : ''; ?>">

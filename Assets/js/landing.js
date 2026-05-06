@@ -14,40 +14,51 @@ function closeDetail() {
   document.body.style.overflow = "";
 }
 
+// 1. Fungsi Buka Tutup Pop-up Kategori
+function toggleCategoryPopup() {
+  const popup = document.getElementById("categoryPopup");
+  // Logika toggle yang lebih stabil
+  if (popup.style.display === "none" || popup.style.display === "") {
+    popup.style.display = "block";
+  } else {
+    popup.style.display = "none";
+  }
+}
+
+// 2. SATU-SATUNYA logika klik jendela (Gabungkan semua di sini)
 window.onclick = function (event) {
+  const popup = document.getElementById("categoryPopup");
+  const trigger = document.querySelector(".btn-category-trigger");
   const modal = document.getElementById("detailModal");
+
+  // LOGIKA POP-UP:
+  // Jika klik terjadi BUKAN di tombol pemicu DAN BUKAN di dalam area pop-up
+  if (popup && popup.style.display === "block") {
+    if (!trigger.contains(event.target) && !popup.contains(event.target)) {
+      popup.style.display = "none";
+    }
+  }
+
+  // LOGIKA MODAL:
   if (event.target === modal) closeDetail();
 };
 
-const isLoggedIn = !!document.querySelector(".auth-buttons span");
-let idleTimer;
-function resetTimer() {
-  if (!isLoggedIn) return;
+// 3. Fungsi menampilkan kategori terpilih (Badge)
+function updateSelectedBadges() {
+  const container = document.getElementById("selectedBadges");
+  const checkboxes = document.querySelectorAll(
+    'input[name="categories[]"]:checked',
+  );
 
-  clearTimeout(idleTimer);
-  idleTimer = setTimeout(() => {
-    window.location.href = "logout.php";
-  }, 60000);
+  container.innerHTML = "";
+
+  checkboxes.forEach((cb) => {
+    const span = document.createElement("span");
+    span.className = "badge-indicator";
+    span.innerText = cb.value;
+    container.appendChild(span);
+  });
 }
 
-if (isLoggedIn) {
-  window.addEventListener("load", resetTimer);
-  window.addEventListener("mousemove", resetTimer);
-  window.addEventListener("mousedown", resetTimer);
-  window.addEventListener("touchstart", resetTimer);
-  window.addEventListener("click", resetTimer);
-  window.addEventListener("keydown", resetTimer);
-}
-
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") closeDetail();
-});
-
-// Debounce search agar tidak submit setiap ketukan
-let debounceTimer;
-function debounceSubmit() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(function () {
-    document.getElementById("filterForm").submit();
-  }, 500);
-}
+// Jalankan saat halaman pertama kali dimuat
+window.addEventListener("load", updateSelectedBadges);
