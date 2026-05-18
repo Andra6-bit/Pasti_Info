@@ -16,84 +16,11 @@ body {
 
 /* HERO */
 .hero {
-  background: linear-gradient(140deg, #0d1f35, #0a3055, #0d4a7a);
+  /* Ubah 140deg menjadi 90deg agar searah dengan gelombang navbar */
+  background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%);
   color: white;
   padding-bottom: 0; /* hapus padding bawah hero */
-}
-
-/* NAVBAR */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 60px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.logo-img {
-  width: 36px;
-  height: 36px;
-  margin: 20px;
-  object-fit: contain;
-  border-radius: 8px;
-  flex-shrink: 0;
-  transform: scale(4);
-}
-
-.auth-buttons {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.auth-buttons span {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.auth-buttons button,
-.auth-buttons a,
-.logout-btn {
-  padding: 9px 22px;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  font-family: inherit;
-  text-decoration: none;
-  display: inline-block;
-  transition: background 0.2s;
-}
-
-.login {
-  background: rgba(255, 255, 255, 0.12);
-  color: white !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-}
-.login:hover {
-  background: rgba(255, 255, 255, 0.22) !important;
-}
-.signup {
-  background: white;
-  color: #0d3055 !important;
-}
-.signup:hover {
-  background: #e8f0fe;
-}
-.logout-btn {
-  background: #e53e3e;
-  color: white !important;
-}
-.logout-btn:hover {
-  background: #c53030;
+  margin-top: -1px; /* tetap gunakan ini untuk menutup celah pixel rendering */
 }
 
 /* HERO CONTENT */
@@ -438,11 +365,6 @@ body {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 18px 24px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
   .section {
     padding: 36px 20px;
   }
