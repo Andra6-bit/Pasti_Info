@@ -1,6 +1,8 @@
 .site-navbar {
-    /* Samakan persis dengan gradient hero di landing.css agar menyatu */
     background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%);
+    position: relative;
+    width: 100%;
+    z-index: 1000;
 }
 
 .site-navbar .navbar {
@@ -91,10 +93,126 @@
     background: rgba(255, 255, 255, 0.25) !important;
 }
 
+/* NAVBAR SEARCH - Mekanik Smooth + Desain Pil yang kamu suka */
+.navbar-search {
+    position: fixed;
+    top: 15px; /* Jarak pil dari atas layar */
+    left: 50%;
+    
+    /* Desain Visual (Style yang kamu mau) */
+    background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%);
+    padding: 10px 24px;
+    border-radius: 50px;
+    box-shadow: 0 8px 30px rgba(13, 31, 53, 0.4);
+    
+    /* Mekanik Sembunyi */
+    transform: translate(-50%, -20px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+    
+    /* Flexbox untuk isi form */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Transisi Smooth sebagai pengganti @keyframes */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-out;
+}
+
+/* SAAT SCROLL MELEWATI BATAS (Muncul Melayang) */
+.navbar-search.visible {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Turun mulus ke posisi top: 15px */
+    pointer-events: all; /* Aktifkan klik */
+}
+
+/* Override ukuran search box di navbar agar lebih compact */
+.navbar-search .search-box input {
+    width: 220px;
+    height: 38px;
+    font-size: 13px;
+}
+
+.navbar-search .btn-category-trigger--dark {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.navbar-search .btn-search-submit--dark {
+    height: 38px;
+    width: 38px;
+    padding: 0;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 50%;
+}
+
 @media (max-width: 768px) {
     .site-navbar .navbar {
         padding: 16px 24px;
         flex-wrap: wrap;
         gap: 10px;
     }
+}
+
+/* Styling untuk tombol Beranda */
+.site-navbar .nav-beranda {
+    color: white !important;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    background: transparent;
+    border-radius: 20px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.site-navbar .nav-beranda:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Styling untuk Tombol Profil yang Lebih Jelas */
+.site-navbar .nav-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 4px; /* Padding diatur agar lingkaran kiri pas */
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    text-decoration: none;
+    transition: background 0.2s, border 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+
+.site-navbar .nav-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.site-navbar .nav-avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #B5D4F4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    color: #0C447C;
+}
+
+.site-navbar .nav-profile-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
 }
