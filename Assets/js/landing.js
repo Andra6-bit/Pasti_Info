@@ -1,23 +1,6 @@
-// Modal
-function openDetail(title, image, location, date, description) {
-  document.getElementById("modalTitle").innerText = title;
-  document.getElementById("modalImage").src = image;
-  document.getElementById("modalLocation").innerText = "📍 " + location;
-  document.getElementById("modalDate").innerText = "📅 " + date;
-  document.getElementById("modalDescription").innerText = description;
-  document.getElementById("detailModal").style.display = "flex";
-  document.body.style.overflow = "hidden";
-}
-
-function closeDetail() {
-  document.getElementById("detailModal").style.display = "none";
-  document.body.style.overflow = "";
-}
-
-// 1. Fungsi Buka Tutup Pop-up Kategori
-function toggleCategoryPopup() {
-  const popup = document.getElementById("categoryPopup");
-  // Logika toggle yang lebih stabil
+// 1. Fungsi Buka Tutup Pop-up Kategori (Sekarang dinamis sesuai ID)
+function toggleCategoryPopup(popupId) {
+  const popup = document.getElementById(popupId);
   if (popup.style.display === "none" || popup.style.display === "") {
     popup.style.display = "block";
   } else {
@@ -25,58 +8,45 @@ function toggleCategoryPopup() {
   }
 }
 
-// 2. SATU-SATUNYA logika klik jendela (Gabungkan semua di sini)
+// 2. Klik jendela menutup Pop-up kategori
 window.onclick = function (event) {
-  const popup = document.getElementById("categoryPopup");
-  const trigger = document.querySelector(".btn-category-trigger");
-  const modal = document.getElementById("detailModal");
-
-  // LOGIKA POP-UP:
-  // Jika klik terjadi BUKAN di tombol pemicu DAN BUKAN di dalam area pop-up
-  if (popup && popup.style.display === "block") {
-    if (!trigger.contains(event.target) && !popup.contains(event.target)) {
-      popup.style.display = "none";
-    }
-  }
-
-  // LOGIKA MODAL:
-  if (event.target === modal) closeDetail();
+  const popups = ['categoryPopupHero', 'categoryPopupFloating'];
+  
+  popups.forEach(id => {
+      const popup = document.getElementById(id);
+      if (popup && popup.style.display === "block") {
+          const isClickInside = popup.contains(event.target);
+          const isClickTrigger = event.target.closest('.btn-category-trigger') || event.target.closest('.btn-category-trigger--dark');
+          
+          if (!isClickInside && !isClickTrigger) {
+              popup.style.display = "none";
+          }
+      }
+  });
 };
 
-// 3. Fungsi menampilkan kategori terpilih (Badge)
+// 3. Fungsi menampilkan kategori terpilih (Badge) tanpa duplikat
 function updateSelectedBadges() {
   const container = document.getElementById("selectedBadges");
-  const checkboxes = document.querySelectorAll(
-    'input[name="categories[]"]:checked',
-  );
+  if (!container) return; // Mencegah error jika tidak ada container
 
+  const checkboxes = document.querySelectorAll('input[name="categories[]"]:checked');
+  
   container.innerHTML = "";
-
+  
+  const uniqueCategories = new Set();
+  
   checkboxes.forEach((cb) => {
+    uniqueCategories.add(cb.value);
+  });
+
+  uniqueCategories.forEach((val) => {
     const span = document.createElement("span");
     span.className = "badge-indicator";
-    span.innerText = cb.value;
+    span.innerText = val;
     container.appendChild(span);
   });
 }
 
 // Jalankan saat halaman pertama kali dimuat
 window.addEventListener("load", updateSelectedBadges);
-
-// Floating Search Bar Smooth Logic
-const navbarSearch = document.getElementById('navbarSearch');
-const mainSearchBar = document.querySelector('.search-wrapper');
-
-window.addEventListener('scroll', function () {
-  if (!mainSearchBar || !navbarSearch) return;
-
-  // Deteksi posisi form pencarian di hero
-  const searchBarRect = mainSearchBar.getBoundingClientRect();
-
-  // Munculkan Pil Pencarian jika form utama sudah tergulung ke atas layar
-  if (searchBarRect.bottom < 0) {
-    navbarSearch.classList.add('visible');
-  } else {
-    navbarSearch.classList.remove('visible');
-  }
-});

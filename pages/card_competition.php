@@ -1,4 +1,4 @@
-<div class="card" style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+<div class="card" style="padding: 12px; display: flex; flex-direction: column; gap: 10px; cursor: pointer;" onclick="window.location.href='detail_lomba.php?id=<?php echo urlencode($row['id'] ?? $row['title']); ?>'">
 
     <img src="../Assets/images/<?php echo htmlspecialchars($row['image']); ?>"
          alt="<?php echo htmlspecialchars($row['title']); ?>"
@@ -31,13 +31,7 @@
                 <?php echo htmlspecialchars($row['date_range']); ?>
             </span>
             <div style="display: flex; justify-content: flex-end;">
-                <button onclick="openDetail(
-                    '<?php echo addslashes(htmlspecialchars($row['title'])); ?>',
-                    '../Assets/images/<?php echo addslashes(htmlspecialchars($row['image'])); ?>',
-                    '<?php echo addslashes(htmlspecialchars($row['location'])); ?>',
-                    '<?php echo addslashes(htmlspecialchars($row['date_range'])); ?>',
-                    '<?php echo addslashes(htmlspecialchars($row['description'])); ?>'
-                )" style="background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; padding: 4px; transition: color 0.2s; line-height: 1;"
+                <button class="like-btn" onclick="event.stopPropagation(); // TODO: Implement bookmark feature" style="background: none; border: none; cursor: pointer; font-size: 20px; color: #aaa; padding: 4px; transition: color 0.2s; line-height: 1;"
                    onmouseover="this.style.color='#e53e3e'"
                    onmouseout="this.style.color='#aaa'">
                     ♡

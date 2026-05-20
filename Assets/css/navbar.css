@@ -34,185 +34,221 @@
     gap: 10px;
 }
 
-.site-navbar .auth-buttons span {
-    font-size: 14px;
-    color: white; /* Diubah ke putih agar kontras di bg gelap */
-    font-weight: 600;
+/* ============================================
+   DESIGN TOKEN — Global Button System
+   ============================================ */
+:root {
+  --btn-h: 40px;
+  --btn-radius: 18px;
+  --btn-font-size: 14px;
+  --btn-font-weight: 600;
+  --btn-px: 20px;
+  --btn-transition: background 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  --avatar-size: 38px;
+  --avatar-font-size: 14px;
 }
 
-.site-navbar .auth-buttons a {
-    padding: 9px 22px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: inherit;
-    text-decoration: none;
-    display: inline-block;
-    transition: background 0.2s, color 0.2s;
-    cursor: pointer;
+/* ============================================
+   NAVBAR HEIGHT FIX — lebih compact & proporsional
+   ============================================ */
+.site-navbar .navbar {
+  padding: 0 48px;
+  height: 81px;
 }
 
-/* Tombol Login: Transparan dengan border putih */
-.nav-login {
-    background: transparent;
-    color: white !important;
-    border: 1.5px solid white !important;
-}
-.nav-login:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
+.site-navbar .logo-img {
+  height: 72px;
+  width: auto;
+  margin: 0;
+  transform: none;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
-/* Tombol Sign Up: Solid putih dengan teks navy (sebagai Primary CTA) */
+/* ============================================
+   BASE BUTTON
+   ============================================ */
+.site-navbar .auth-buttons a,
+.site-navbar .auth-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: var(--btn-h);
+  padding: 0 var(--btn-px);
+  border-radius: var(--btn-radius);
+  font-size: var(--btn-font-size);
+  font-weight: var(--btn-font-weight);
+  font-family: inherit;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--btn-transition);
+  border: 1.5px solid transparent;
+}
+
+/* ============================================
+   AUTH BUTTONS SPACING
+   ============================================ */
+.site-navbar .auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================
+   VARIANT: Ghost — Login & Beranda
+   ============================================ */
+.nav-login,
+.nav-beranda {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  letter-spacing: 0.2px;
+}
+.nav-login:hover,
+.nav-beranda:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+.nav-login:active,
+.nav-beranda:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.nav-beranda {
+  margin-right: 12px;
+}
+
+/* ============================================
+   VARIANT: Solid White — Sign Up (Primary CTA)
+   ============================================ */
 .nav-signup {
-    background: white;
-    color: #0a3055 !important;
-    border: 1.5px solid white !important;
+  background: #ffffff !important;
+  color: #0a3055 !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 .nav-signup:hover {
-    background: #f0f4f9 !important;
-    border-color: #f0f4f9 !important;
+  background: #e4eef9 !important;
+  border-color: #e4eef9 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+.nav-signup:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
-/* Tombol Logout: Merah cerah agar tetap waspada */
+/* ============================================
+   VARIANT: Danger — Logout
+   ============================================ */
 .nav-logout {
-    background: #e53e3e;
-    color: white !important;
-    border: none !important;
+  background: #e53e3e !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 2px 8px rgba(229, 62, 62, 0.28);
 }
 .nav-logout:hover {
-    background: #c53030 !important;
+  background: #c53030 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.38);
+}
+.nav-logout:active {
+  transform: translateY(0);
 }
 
-/* Tombol Admin: Semi-transparan putih */
+/* ============================================
+   VARIANT: Glass — Admin
+   ============================================ */
 .nav-admin {
-    background: rgba(255, 255, 255, 0.15);
-    color: white !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
 }
 .nav-admin:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px);
 }
 
-/* NAVBAR SEARCH - Mekanik Smooth + Desain Pil yang kamu suka */
-.navbar-search {
-    position: fixed;
-    top: 15px; /* Jarak pil dari atas layar */
-    left: 50%;
-    
-    /* Desain Visual (Style yang kamu mau) */
-    background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%);
-    padding: 10px 24px;
-    border-radius: 50px;
-    box-shadow: 0 8px 30px rgba(13, 31, 53, 0.4);
-    
-    /* Mekanik Sembunyi */
-    transform: translate(-50%, -20px);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 2000;
-    
-    /* Flexbox untuk isi form */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-    /* Transisi Smooth sebagai pengganti @keyframes */
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-out;
+/* ============================================
+   AVATAR BUTTON — Profile (diperbesar & dirapikan)
+   ============================================ */
+.site-navbar .nav-avatar-button {
+  width: var(--avatar-size) !important;
+  height: var(--avatar-size) !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  flex-shrink: 0;
+
+  background: #deedf8 !important;
+  border: 2px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+
+  font-size: var(--avatar-font-size) !important;
+  font-weight: 700 !important;
+  color: #0a3055 !important;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.site-navbar .nav-avatar-button:hover {
+  background: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: #0d4a7a !important;
+  transform: translateY(-1px) scale(1.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.site-navbar .nav-avatar-button:active {
+  transform: scale(1.0);
 }
 
-/* SAAT SCROLL MELEWATI BATAS (Muncul Melayang) */
-.navbar-search.visible {
-    opacity: 1;
-    transform: translate(-50%, 0); /* Turun mulus ke posisi top: 15px */
-    pointer-events: all; /* Aktifkan klik */
-}
-
-/* Override ukuran search box di navbar agar lebih compact */
+/* ============================================
+   FLOATING SEARCH — override ukuran compact
+   ============================================ */
 .navbar-search .search-box input {
-    width: 220px;
-    height: 38px;
-    font-size: 13px;
+  width: 210px;
+  height: 34px;
+  font-size: 13px;
+  border-radius: 17px;
 }
 
-.navbar-search .btn-category-trigger--dark {
-    height: 38px;
-    padding: 0 16px;
-    font-size: 13px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-}
-
+.navbar-search .btn-category-trigger--dark,
 .navbar-search .btn-search-submit--dark {
-    height: 38px;
-    width: 38px;
-    padding: 0;
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    border-radius: 50%;
+  height: 34px;
+  font-size: 13px;
+  border-radius: 17px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: white;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.navbar-search .btn-search-submit--dark {
+  padding: 0 16px;
+  font-size: 15px;
+}
+.navbar-search .btn-category-trigger--dark:hover,
+.navbar-search .btn-search-submit--dark:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
-    .site-navbar .navbar {
-        padding: 16px 24px;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-}
-
-/* Styling untuk tombol Beranda */
-.site-navbar .nav-beranda {
-    color: white !important;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 8px 16px;
-    background: transparent;
-    border-radius: 20px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.site-navbar .nav-beranda:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* Styling untuk Tombol Profil yang Lebih Jelas */
-.site-navbar .nav-profile-btn {
-    display: flex;
-    align-items: center;
+  .site-navbar .navbar {
+    padding: 10px 20px;
+    flex-wrap: wrap;
     gap: 8px;
-    padding: 4px 14px 4px 4px; /* Padding diatur agar lingkaran kiri pas */
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 30px;
-    text-decoration: none;
-    transition: background 0.2s, border 0.2s, transform 0.2s;
-    cursor: pointer;
+  }
 }
 
-.site-navbar .nav-profile-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
-    transform: translateY(-1px);
-}
-
-.site-navbar .nav-avatar-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #B5D4F4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 800;
-    color: #0C447C;
-}
-
-.site-navbar .nav-profile-text {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-}

@@ -41,6 +41,8 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil - LombaID</title>
     <link rel="stylesheet" href="../Assets/css/navbar.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../Assets/css/landing.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../Assets/css/floating_search.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
@@ -64,7 +66,7 @@ try {
         }
 
         .profile-container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
@@ -147,6 +149,77 @@ try {
             .field-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--color-border-tertiary); }
             .field-item:last-child { border-bottom: none; }
         }
+
+        /* ============================================
+           PROFILE PAGE — Button System
+           ============================================ */
+
+        /* Edit Button */
+        .edit-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 6px 14px;
+          border-radius: 18px;
+          border: 1.5px solid #c8ddf2;
+          background: #eaf3fc;
+          color: #185FA5;
+          font-size: 12.5px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s, border-color 0.2s, transform 0.15s;
+          text-decoration: none;
+        }
+        .edit-btn:hover {
+          background: #d6eaf8;
+          border-color: #8ab8e0;
+          transform: translateY(-1px);
+        }
+
+        /* Sidenav Items — tighten hover state */
+        .sidenav-item {
+          transition: background 0.2s, padding-left 0.2s;
+        }
+        .sidenav-item:hover {
+          background: #f1f7fd;
+          padding-left: 20px; /* subtle slide-in */
+        }
+        .sidenav-item.active {
+          background: #E6F1FB;
+          color: #185FA5;
+          border-left: 3px solid #185FA5;
+          padding-left: 17px; /* compensate border width */
+          font-weight: 700;
+        }
+        .sidenav-item.danger:hover {
+          background: #fff0f0;
+          color: #c0392b;
+          padding-left: 20px;
+        }
+
+        /* Settings clickable field items */
+        .field-item[style*="cursor: pointer"] {
+          border-radius: 0;
+          transition: background 0.2s, padding-left 0.2s !important;
+        }
+        .field-item[style*="cursor: pointer"]:hover {
+          background: #f1f7fd !important;
+          padding-left: 28px;
+        }
+        .field-item[style*="cursor: pointer"] .field-label {
+          color: #185FA5 !important;
+          font-size: 13px;
+          font-weight: 600;
+        }
+                /* ── TAB SYSTEM (dari admin) ── */
+                .tab-panel { display: none; }
+                .tab-panel.active { display: block; }
+
+                /* ── sidenav pakai div, bukan <a> ── */
+                .sidenav-item {
+                        cursor: pointer;
+                        border-left: 3px solid transparent;
+                }
     </style>
 </head>
 <body>
@@ -158,23 +231,21 @@ try {
         
         <div class="sidebar">
             <div class="profile-card">
-                <div class="avatar">
-                    <?= $initial ?>
-                </div>
+                <div class="avatar"><?= $initial ?></div>
                 <div class="profile-name"><?= htmlspecialchars($username) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($email) ?></div>
             </div>
 
             <div class="sidenav">
-                <a href="#data-diri" class="sidenav-item active">
+                <div class="sidenav-item active" onclick="switchTab('data-diri', this)">
                     <i class="ti ti-user" style="font-size:18px"></i> Data diri
-                </a>
-                <a href="#lomba-tersimpan" class="sidenav-item">
+                </div>
+                <div class="sidenav-item" onclick="switchTab('lomba-tersimpan', this)">
                     <i class="ti ti-bookmark" style="font-size:18px"></i> Lomba tersimpan
-                </a>
-                <a href="#pengaturan" class="sidenav-item">
+                </div>
+                <div class="sidenav-item" onclick="switchTab('pengaturan', this)">
                     <i class="ti ti-settings" style="font-size:18px"></i> Pengaturan
-                </a>
+                </div>
                 <a href="logout.php" class="sidenav-item danger">
                     <i class="ti ti-logout" style="font-size:18px"></i> Keluar
                 </a>
@@ -182,56 +253,64 @@ try {
         </div>
 
         <div class="main-content">
-            
-            <div class="section" id="data-diri">
-                <div class="section-head">
-                    <span class="section-title">Informasi Data Diri</span>
-                    <span class="edit-btn"><i class="ti ti-edit" style="font-size:16px"></i> Edit</span>
-                </div>
-                <div class="field-grid">
-                    <div class="field-item">
-                        <div class="field-label">Username</div>
-                        <div class="field-value"><?= htmlspecialchars($username) ?></div>
-                    </div>
-                    <div class="field-item">
-                        <div class="field-label">Email</div>
-                        <div class="field-value"><?= htmlspecialchars($email) ?></div>
-                    </div>
-                    
-                    <div class="field-item">
-                        <div class="field-label">Asal Instansi/Sekolah</div>
-                        <div class="field-empty">Belum diatur</div>
-                    </div>
-                    <div class="field-item">
-                        <div class="field-label">Nomor WhatsApp</div>
-                        <div class="field-empty">Belum diatur</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="section" id="lomba-tersimpan">
-                <div class="section-head">
-                    <span class="section-title">Lomba Tersimpan</span>
-                </div>
-                <div style="padding: 40px 20px; text-align: center; color: var(--color-text-secondary);">
-                    <i class="ti ti-bookmark-off" style="font-size: 48px; opacity: 0.5; margin-bottom: 10px; display: block;"></i>
-                    <p style="font-size: 14px; font-weight: 500;">Belum ada lomba yang kamu simpan.</p>
-                </div>
-            </div>
-
-            <div class="section" id="pengaturan">
-                <div class="section-head">
-                    <span class="section-title">Pengaturan Akun</span>
-                </div>
-                <div class="field-grid">
-                    <div class="field-item" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                        <div class="field-label" style="color: var(--color-text-primary); font-size: 13px;">
-                            <i class="ti ti-lock" style="vertical-align: middle; margin-right: 4px;"></i> Ganti Password
+            <!-- TAB: Data Diri -->
+            <div class="tab-panel active" id="tab-data-diri">
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">Informasi Data Diri</span>
+                        <span class="edit-btn"><i class="ti ti-edit" style="font-size:16px"></i> Edit</span>
+                    </div>
+                    <div class="field-grid">
+                        <div class="field-item">
+                            <div class="field-label">Username</div>
+                            <div class="field-value"><?= htmlspecialchars($username) ?></div>
+                        </div>
+                        <div class="field-item">
+                            <div class="field-label">Email</div>
+                            <div class="field-value"><?= htmlspecialchars($email) ?></div>
+                        </div>
+                        <div class="field-item">
+                            <div class="field-label">Asal Instansi/Sekolah</div>
+                            <div class="field-empty">Belum diatur</div>
+                        </div>
+                        <div class="field-item">
+                            <div class="field-label">Nomor WhatsApp</div>
+                            <div class="field-empty">Belum diatur</div>
                         </div>
                     </div>
-                    <div class="field-item" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                        <div class="field-label" style="color: var(--color-text-primary); font-size: 13px;">
-                            <i class="ti ti-bell" style="vertical-align: middle; margin-right: 4px;"></i> Preferensi Notifikasi
+                </div>
+            </div>
+
+            <!-- TAB: Lomba Tersimpan -->
+            <div class="tab-panel" id="tab-lomba-tersimpan">
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">Lomba Tersimpan</span>
+                    </div>
+                    <div style="padding: 40px 20px; text-align: center; color: var(--color-text-secondary);">
+                        <i class="ti ti-bookmark-off" style="font-size: 48px; opacity: 0.5; margin-bottom: 10px; display: block;"></i>
+                        <p style="font-size: 14px; font-weight: 500;">Belum ada lomba yang kamu simpan.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Pengaturan -->
+            <div class="tab-panel" id="tab-pengaturan">
+                <div class="section">
+                    <div class="section-head">
+                        <span class="section-title">Pengaturan Akun</span>
+                    </div>
+                    <div class="field-grid">
+                        <div class="field-item" style="cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <div class="field-label" style="color: var(--color-text-primary); font-size: 13px;">
+                                <i class="ti ti-lock" style="vertical-align: middle; margin-right: 4px;"></i> Ganti Password
+                            </div>
+                        </div>
+                        <div class="field-item" style="cursor: pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                            <div class="field-label" style="color: var(--color-text-primary); font-size: 13px;">
+                                <i class="ti ti-bell" style="vertical-align: middle; margin-right: 4px;"></i> Preferensi Notifikasi
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -240,6 +319,18 @@ try {
         </div>
     </div>
 </div>
+
+</div>
+
+<script>
+function switchTab(tab, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidenav-item').forEach(i => i.classList.remove('active'));
+    var panel = document.getElementById('tab-' + tab);
+    if (panel) panel.classList.add('active');
+    if (el) el.classList.add('active');
+}
+</script>
 
 </body>
 </html>

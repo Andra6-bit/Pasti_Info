@@ -1,0 +1,97 @@
+/* Assets/css/floating_search.css */
+
+.navbar-search {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%);
+    padding: 8px 20px;
+    border-radius: 50px;
+    box-shadow: 0 8px 30px rgba(13, 31, 53, 0.4);
+    transform: translate(-50%, -20px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease-out;
+}
+
+.navbar-search.visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: all;
+}
+
+.navbar-search .search-box input {
+    width: 220px;
+    height: 38px;
+    font-size: 13px;
+    border-radius: 20px;
+}
+
+.navbar-search .btn-category-trigger--dark {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.navbar-search .btn-search-submit--dark {
+    height: 38px;
+    padding: 0 20px;
+    font-size: 24px; /* 💡 Besarkan dari 16px menjadi 24px */
+    font-weight: 900; /* 💡 Buat ketebalan maksimal */
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+    line-height: 1; /* Menjaga agar panah tetap presisi di tengah */
+}
+
+.navbar-search .btn-search-submit--dark:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(3px); /* Gerakan ke kanan saat di-hover sedikit dilebarkan */
+}
+
+/* =====================================
+   Tombol Profil di Floating Search Bar
+======================================== */
+.floating-profile-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #deedf8;
+    color: #0a3055;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    flex-shrink: 0;
+}
+
+.floating-profile-btn:hover {
+    background: #ffffff;
+    border-color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+}
+
+.floating-profile-btn:active {
+    transform: translateY(0) scale(1);
+}

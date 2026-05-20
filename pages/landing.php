@@ -45,7 +45,7 @@ $result = mysqli_stmt_get_result($stmt);
     <title>Competition Info - P Info</title>
     <link rel="stylesheet" href="../Assets/css/landing.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../Assets/css/navbar.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="../Assets/css/modal_detail.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../Assets/css/floating_search.css?v=<?php echo time(); ?>">
     
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -62,10 +62,10 @@ $result = mysqli_stmt_get_result($stmt);
                     <input type="text" name="search" id="searchInput" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
                 </div>
                 <div class="category-dropdown">
-                    <button type="button" class="btn-category-trigger" onclick="toggleCategoryPopup()">
+                    <button type="button" class="btn-category-trigger" onclick="toggleCategoryPopup('categoryPopupHero')">
                         Kategori ▾
                     </button>
-                    <div id="categoryPopup" class="category-popup-content">
+                    <div id="categoryPopupHero" class="category-popup-content">
                         <?php foreach ($allowed_categories as $cat): ?>
                             <label class="category-item">
                                 <input type="checkbox" name="categories[]" value="<?= htmlspecialchars($cat) ?>"
@@ -111,15 +111,13 @@ $result = mysqli_stmt_get_result($stmt);
     </div>
 </section>
 
-<!-- Panggil file detail info di sini -->
-<?php include 'modal_detail.php'; ?>
-
 <section class="bottom-cta">
     <h2>Unlock Your Potential</h2>
     <p>Temukan berbagai kompetisi terbaik untuk meningkatkan skill dan membangun portofolio.</p>
 </section>
 
 <script src="../Assets/js/landing.js?v=<?= time(); ?>"></script>
+<script src="../Assets/js/floating_search.js?v=<?= time(); ?>"></script>
 <?php if (!isset($_SESSION['status']) || $_SESSION['status'] !== "login"): ?>
 <script>
     setTimeout(function() {
