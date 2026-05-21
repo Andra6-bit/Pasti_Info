@@ -1,0 +1,339 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  min-height: 100vh;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0d1f35; /* default: navy (tidak ada poster) */
+  color: #f8fafc;
+}
+
+body.has-posters {
+  background-color: #ffffff; /* ada poster: putih */
+}
+
+section {
+  background-color: transparent;
+}
+
+/* ══════════════════════════════════════
+   ANIMATED POSTER BACKGROUND
+══════════════════════════════════════ */
+.bg-columns {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  gap: 10px;
+  padding: 0 10px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transform: rotate(15deg) scale(1.5);
+  transform-origin: center;
+}
+
+.bg-col {
+  flex: 1;
+  /* JANGAN overflow:hidden di sini — biarkan col-track bebas keluar batas kolom secara vertikal */
+}
+
+.col-track {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  will-change: transform;
+}
+
+.bg-col:nth-child(1) .col-track {
+  animation: scrollUp 50s linear infinite;
+}
+.bg-col:nth-child(2) .col-track {
+  animation: scrollDown 45s linear infinite;
+}
+.bg-col:nth-child(3) .col-track {
+  animation: scrollUp 50s linear infinite;
+}
+.bg-col:nth-child(4) .col-track {
+  animation: scrollDown 45s linear infinite;
+}
+.bg-col:nth-child(5) .col-track {
+  animation: scrollUp 50s linear infinite;
+}
+.bg-col:nth-child(6) .col-track {
+  animation: scrollDown 45s linear infinite;
+}
+.bg-col:nth-child(7) .col-track {
+  animation: scrollUp 50s linear infinite;
+}
+
+@keyframes scrollUp {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+/* scrollDown = mulai dari -50% → 0, lalu loop → seamless naik-turun bergantian */
+@keyframes scrollDown {
+  0%   { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+.bg-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ══════════════════════════════════════
+   MAIN LAYOUT
+══════════════════════════════════════ */
+section {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 16px;
+  overflow-y: auto;
+}
+
+/* ══════════════════════════════════════
+   LOGIN BOX
+══════════════════════════════════════ */
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  min-width: 320px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 24px;
+  padding: 0 36px 40px 36px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.35),
+    0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: fadeSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── LOGO ── */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-wrap img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+/* ══════════════════════════════════════
+   TOGGLE BUTTONS
+══════════════════════════════════════ */
+.toggle-group {
+  display: flex;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: transparent;
+  color: #94a3b8;
+}
+
+.toggle-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 700;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: scale(1.02);
+}
+
+/* ══════════════════════════════════════
+   FORM GROUPS
+══════════════════════════════════════ */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 7px;
+}
+
+/* ══════════════════════════════════════
+   INPUT FIELDS
+══════════════════════════════════════ */
+.input-box input {
+  width: 100%;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  color: #1e293b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+  outline: none;
+}
+
+.input-box input::placeholder {
+  color: #b0bec5;
+  font-size: 13px;
+}
+
+.input-box input:focus {
+  border-color: #64b5f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
+}
+
+/* ══════════════════════════════════════
+   SUBMIT BUTTON
+══════════════════════════════════════ */
+.btn-submit {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 12px;
+  background: #2a5298;
+  color: #ffffff;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s,
+    background 0.2s;
+  box-shadow: 0 4px 14px rgba(30, 41, 59, 0.3);
+}
+
+.btn-submit:hover {
+  background: #0f172a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.4);
+}
+
+.btn-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(30, 41, 59, 0.3);
+}
+
+/* ══════════════════════════════════════
+   FORM TRANSITION ANIMATION
+══════════════════════════════════════ */
+.form-slide {
+  animation: formIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes formIn {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-slide-left {
+  animation: formInLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes formInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ══════════════════════════════════════
+   Google Button
+══════════════════════════════════════ */
+/* Cari atau ganti .glow-line Tuan dengan ini */
+.glow-line {
+  position: relative;
+  height: 1px;
+  background: #e2e8f0; /* Warna abu-abu lembut */
+  margin: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Teks "atau" di tengah garis */
+.glow-line::after {
+  content: "atau";
+  background: #ffffff; /* Sama dengan bg login-box */
+  padding: 0 15px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Container khusus tombol Google agar presisi di tengah */
+.google-btn-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
