@@ -28,18 +28,38 @@ function openAdd() {
 }
 
 function openEdit(id, title, image, pelaksanaan, date_range, target_peserta, biaya, category, desc) {
+    var data;
+    if (typeof id === 'object' && id !== null) {
+        data = id;
+    } else {
+        data = {
+            id: id,
+            title: title,
+            foto: image,
+            image: image,
+            pelaksanaan: pelaksanaan,
+            date_range: date_range,
+            target_peserta: target_peserta,
+            biaya: biaya,
+            category: category,
+            description: desc,
+            desc: desc
+        };
+    }
+
     document.getElementById('modal-title').textContent   = 'Edit Kompetisi';
     document.getElementById('f-action').value            = 'edit';
-    document.getElementById('f-id').value                = id;
-    document.getElementById('f-old-img').value           = image;
-    document.getElementById('f-title').value             = title;
-    document.getElementById('f-pelaksanaan').value       = pelaksanaan;
-    document.getElementById('f-target-peserta').value    = target_peserta;
-    document.getElementById('f-biaya').value             = biaya;
-    document.getElementById('f-category').value          = category;
+    document.getElementById('f-id').value                = data.id;
+    document.getElementById('f-old-img').value           = data.foto || data.image || 'default.jpg';
+    document.getElementById('f-title').value             = data.title || '';
+    document.getElementById('f-pelaksanaan').value       = data.pelaksanaan || 'Online';
+    document.getElementById('f-target-peserta').value    = data.target_peserta || 'Umum';
+    document.getElementById('f-biaya').value             = data.biaya || '';
+    document.getElementById('f-category').value          = data.category || '';
     
-    let dates = date_range.split(',');
-    if(dates.length === 2) {
+    var dateRange = data.date_range || '';
+    var dates = dateRange.split(',');
+    if (dates.length === 2) {
         document.getElementById('f-start-date').value = dates[0];
         document.getElementById('f-end-date').value   = dates[1];
     } else {
@@ -47,12 +67,13 @@ function openEdit(id, title, image, pelaksanaan, date_range, target_peserta, bia
         document.getElementById('f-end-date').value   = '';
     }
 
-    document.getElementById('f-desc').value              = desc;
+    document.getElementById('f-desc').value              = data.description || data.desc || '';
     document.getElementById('f-submit').textContent      = 'Simpan Perubahan';
 
     var pb = document.getElementById('previewBox');
-    if (image && image !== 'default.jpg') {
-        document.getElementById('previewImg').src = '../Assets/images/' + image;
+    var previewImage = data.foto || data.image || '';
+    if (previewImage && previewImage !== 'default.jpg') {
+        document.getElementById('previewImg').src = '../Assets/images/' + previewImage;
         pb.style.display = 'block';
     } else {
         pb.style.display = 'none';

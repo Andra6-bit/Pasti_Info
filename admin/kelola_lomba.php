@@ -38,7 +38,7 @@ $total = mysqli_num_rows($all);
             ?>
             <tr>
                 <td>
-                    <img src="../Assets/images/<?= htmlspecialchars($row['image']) ?>" class="td-img" onerror="this.src='../Assets/images/logo.jpeg'" alt="">
+                    <img src="../Assets/images/<?= htmlspecialchars($row['foto'] ?? $row['image'] ?? 'default.jpg') ?>" class="td-img" onerror="this.src='../Assets/images/logo.jpeg'" alt="">
                 </td>
                 <td style="font-weight:600;"><?= htmlspecialchars($row['title']) ?></td>
                 <td>
@@ -63,17 +63,7 @@ $total = mysqli_num_rows($all);
                 
                 <td>
                     <div class="actions">
-                        <button class="btn btn-secondary btn-sm" onclick="openEdit(
-                            <?= $row['id'] ?>,
-                            '<?= addslashes(htmlspecialchars($row['title'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['image'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['pelaksanaan'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['date_range'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['target_peserta'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['biaya'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['category'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['description'])) ?>'
-                        )">Edit</button>
+                        <button class="btn btn-secondary btn-sm" onclick='openEdit(<?= htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') ?>)'>Edit</button>
                         <a href="lomba_action.php?delete=<?= $row['id'] ?>"
                            class="btn btn-danger btn-sm"
                            onclick="return confirm('Yakin hapus kompetisi ini?')">Hapus</a>

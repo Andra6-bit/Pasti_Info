@@ -12,7 +12,7 @@ $msg_type = '';
 // ── HAPUS ───────────────────────────────────────────────────
 if (isset($_GET['delete'])) {
     $id   = (int)$_GET['delete'];
-    $stmt = mysqli_prepare($koneksi, "SELECT image FROM competitions WHERE id = ?");
+    $stmt = mysqli_prepare($koneksi, "SELECT foto FROM competitions WHERE id = ?");
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $del_row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -20,8 +20,8 @@ if (isset($_GET['delete'])) {
     $stmt2 = mysqli_prepare($koneksi, "DELETE FROM competitions WHERE id = ?");
     mysqli_stmt_bind_param($stmt2, "i", $id);
     if (mysqli_stmt_execute($stmt2)) {
-        if ($del_row && $del_row['image'] !== 'default.jpg') {
-            $img_path = "../Assets/images/" . $del_row['image'];
+        if ($del_row && $del_row['foto'] !== 'default.jpg') {
+            $img_path = "../Assets/images/" . $del_row['foto'];
             if (file_exists($img_path)) unlink($img_path);
         }
         $msg = "Kompetisi berhasil dihapus.";
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($msg)) {
         if ($action === 'add') {
             $stmt = mysqli_prepare($koneksi,
-                "INSERT INTO competitions (title, image, pelaksanaan, date_range, target_peserta, biaya, category, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                "INSERT INTO competitions (title, foto, pelaksanaan, date_range, target_peserta, biaya, category, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             mysqli_stmt_bind_param($stmt, "sssssiss", $title, $image_name, $pelaksanaan, $date_range, $target_peserta, $biaya, $category, $description);
             $ok = mysqli_stmt_execute($stmt);
             $msg = $ok ? "Kompetisi berhasil ditambahkan!" : "Gagal menyimpan data.";
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (file_exists($p)) unlink($p);
             }
             $stmt = mysqli_prepare($koneksi,
-                "UPDATE competitions SET title=?, image=?, pelaksanaan=?, date_range=?, target_peserta=?, biaya=?, category=?, description=? WHERE id=?");
+                "UPDATE competitions SET title=?, foto=?, pelaksanaan=?, date_range=?, target_peserta=?, biaya=?, category=?, description=? WHERE id=?");
             mysqli_stmt_bind_param($stmt, "ssssisssi", $title, $image_name, $pelaksanaan, $date_range, $target_peserta, $biaya, $category, $description, $post_id);
             $ok = mysqli_stmt_execute($stmt);
             $msg = $ok ? "Kompetisi berhasil diperbarui!" : "Gagal memperbarui data.";

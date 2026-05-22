@@ -65,7 +65,7 @@ if ($user_id > 0) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     
     <link rel="stylesheet" href="../Assets/css/profile.css?v=<?php echo time(); ?>">
-    <script src="../Assets/js/profile.js?v=<?= time(); ?>"></script>
+    <script src="../Assets/js/profile.js?v=<?= filemtime(__DIR__ . '/../Assets/js/profile.js') ?>" defer></script>
 </head>
 <body>
 
@@ -144,6 +144,9 @@ if ($user_id > 0) {
                     <div class="saved-list">
                         <?php foreach ($saved_competitions as $saved): ?>
                             <a href="detail_lomba.php?id=<?php echo urlencode($saved['id']); ?>" class="saved-item">
+                                <div class="saved-item-thumb">
+                                    <img src="../Assets/images/<?= htmlspecialchars($saved['foto'] ?? $saved['image'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($saved['title']); ?>" onerror="this.src='../Assets/images/default.jpg'">
+                                </div>
                                 <div class="saved-item-content">
                                     <div class="saved-title"><?= htmlspecialchars($saved['title']); ?></div>
                                     <div class="saved-meta">

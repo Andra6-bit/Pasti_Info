@@ -41,7 +41,7 @@ $active_tab = $_GET['tab'] ?? 'data-diri';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
     <link rel="stylesheet" href="../Assets/css/admin.css?v=<?php echo time(); ?>">
-    <script src="../Assets/js/admin.js?v=<?= time(); ?>"></script>
+    <script src="../Assets/js/admin.js?v=<?= filemtime(__DIR__ . '/../Assets/js/admin.js') ?>" defer></script>
 </head>
 <body>
 
