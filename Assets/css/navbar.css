@@ -252,3 +252,106 @@
   }
 }
 
+/* ============================================
+   MOBILE RESPONSIVE - NAVBAR
+   ============================================ */
+@media (max-width: 480px) {
+  .site-navbar .navbar {
+    padding: 0 16px;
+    height: 60px;
+  }
+  
+  .site-navbar .logo-img {
+    height: 40px;
+  }
+
+  .site-navbar .auth-buttons {
+    gap: 6px;
+  }
+
+  /* Override custom properties untuk tombol agar lebih mungil */
+  :root {
+    --btn-h: 32px;
+    --btn-px: 12px;
+    --btn-font-size: 12px;
+    --avatar-size: 32px;
+    --avatar-font-size: 12px;
+  }
+
+  /* Sembunyikan link 'Beranda' di layar kecil agar tidak sesak */
+  .nav-beranda {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   MOBILE BOTTOM NAVIGATION (TOMBOL PUTIH & LOGO GELAP)
+   ============================================ */
+.mobile-bottom-nav {
+  display: none; 
+}
+
+@media (max-width: 480px) {
+  /* Sembunyikan Beranda & Tombol Profil dari Navbar Atas */
+  .site-navbar .nav-beranda,
+  .site-navbar .nav-avatar-button {
+    display: none !important;
+  }
+
+  /* Tampilkan Bottom Nav dengan warna tema biru */
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    background: linear-gradient(90deg, #0d1f35 0%, #0a3055 50%, #0d4a7a 100%) !important;
+    
+    /* Naikkan z-index ke tingkat tertinggi agar mutlak mengunci di atas semua popup */
+    z-index: 99999 !important; 
+    
+    /* Menjaga akselerasi grafis tetap stabil */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: calc(10px + env(safe-area-inset-bottom)); 
+  }
+
+  /* Gaya fisik tombol bulat berwarna putih */
+  .mobile-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    
+    background: #ffffff !important; /* Fisik tombol berwarna putih murni */
+    color: #0a3055 !important; /* Warna logo di dalam (biru gelap/hitam sesuai tema) */
+    
+    width: 46px; /* Menentukan lebar dan tinggi tombol agar bulat sempurna */
+    height: 46px;
+    border-radius: 33%; /* Membuat bentuk lingkaran */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25); /* Efek bayangan agar tombol terlihat timbul */
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .mobile-nav-item .material-symbols-outlined {
+    font-size: 24px; /* Ukuran icon pas di tengah lingkaran putih */
+  }
+
+  /* Efek feedback saat tombol disentuh/di-klik */
+  .mobile-nav-item:hover,
+  .mobile-nav-item:active {
+    transform: scale(1.1); /* Sedikit membesar */
+    background-color: #e4eef9 !important; /* Berubah putih kebiruan soft saat ditekan */
+  }
+
+  body {
+    padding-bottom: 75px; /* Memberikan ruang di bawah konten utama agar tidak tertutup */
+  }
+}
+

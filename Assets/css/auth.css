@@ -337,3 +337,37 @@ section {
   justify-content: center;
   width: 100%;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE - AUTH PAGE
+   ============================================ */
+@media (max-width: 480px) {
+  section {
+    padding: 20px 16px;
+  }
+  
+  .login-box {
+    padding: 0 24px 32px; /* Kurangi padding kiri-kanan */
+    border-radius: 20px;
+    min-width: 100%; /* Penuhi lebar layar */
+  }
+
+  .logo-wrap img {
+    width: 150px; /* Logo diperkecil agar form tidak terlalu ke bawah */
+    height: 150px;
+  }
+
+  .glow-line {
+    margin: 24px 0;
+  }
+
+  .input-box input {
+    padding: 10px 14px; /* Kolom input sedikit lebih tipis */
+    font-size: 13px;
+  }
+
+  .btn-submit {
+    padding: 12px;
+    font-size: 14px;
+  }
+}

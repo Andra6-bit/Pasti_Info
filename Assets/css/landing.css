@@ -37,80 +37,74 @@ body {
 .hero-wave {
   line-height: 0;
   margin-top: 10px;
+  margin-bottom: -2px;
 }
 
 .hero-wave svg {
   display: block;
   width: 100%;
   height: 120px;
+  /* --- KODE PENUTUP CELAH --- */
+  transform: translateY(3px); /* Mendorong gambar ombak ke bawah sejauh 3 piksel */
+  position: relative;
+  z-index: 10;
 }
 
 /* SEARCH */
 .search-wrapper {
   margin-top: 28px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.search-main-bar {
+  width: 100%;
+  max-width: 672px;
+  background: #ffffff;
+  border-radius: 9999px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 12px 32px rgba(13, 48, 85, 0.15);
+  transition: box-shadow 0.25s;
+}
+.search-main-bar:focus-within {
+  box-shadow: 0 0 0 2px #001c2d, 0 12px 32px rgba(13, 48, 85, 0.15);
 }
 
 .search-box {
-  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  border-right: 1px solid #c3c6cf;
+  padding-right: 16px;
+  gap: 8px;
 }
-.search-box::before {
-  content: "🔍";
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 1;
-}
+.search-box::before { display: none; } /* hapus emoji lama */
 
-.search-box input,
-.search-wrapper select {
-  height: 48px;
-  border-radius: 50px;
-  border: 2px solid transparent;
-  font-size: 14px;
-  font-family: inherit;
-  background: white;
-  color: #1a2a3a;
-  outline: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-  transition: border 0.2s;
+.search-box-icon {
+  font-size: 20px;
+  color: #73777f;
+  flex-shrink: 0;
+  font-family: 'Material Symbols Outlined';
+  font-weight: 300;
 }
 
 .search-box input {
-  width: 340px;
-  padding: 0 20px 0 46px;
-}
-.search-box input:focus,
-.search-wrapper select:focus {
-  border-color: #5bb8f5;
-}
-
-.search-wrapper select {
-  padding: 0 36px 0 18px;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231a2a3a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-color: white;
-}
-
-/* Baris Utama Search */
-.search-main-bar {
-  display: flex;
-  gap: 10px;
-  align-items: center;
   width: 100%;
-  justify-content: center;
-  flex-wrap: wrap;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  font-family: inherit;
+  color: #0c1d2c;
+  padding: 10px 0;
+  outline: none;
+  box-shadow: none;
 }
+.search-box input::placeholder { color: #73777f; }
 
 /* Container Dropdown */
 .category-dropdown {
@@ -118,40 +112,42 @@ body {
   display: inline-block;
 }
 
-/* ============================================
-   HERO BUTTONS — shared token
-   ============================================ */
-.btn-category-trigger,
-.btn-search-submit {
+.btn-category-trigger {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  height: 48px;
-  padding: 0 22px;
-  border-radius: 24px;
+  gap: 4px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #43474e;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.btn-category-trigger:hover { opacity: 0.8; }
+
+.btn-search-submit {
+  background: #001b36;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 24px;
   font-size: 14px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  white-space: nowrap;
-  letter-spacing: 0.2px;
+  margin-left: 8px;
+  transition: background 0.25s, transform 0.25s;
+  flex-shrink: 0;
 }
-.btn-category-trigger:hover,
 .btn-search-submit:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  background: #0a3055;
+  transform: translateY(-2px);
 }
-.btn-search-submit:active,
-.btn-category-trigger:active {
-  transform: translateY(0);
-  box-shadow: none;
-}
+.btn-search-submit:active { transform: translateY(0); }
 
 
 
@@ -334,26 +330,130 @@ body {
   color: #5a7a99;
 }
 
-/* BOTTOM CTA */
-.bottom-cta {
-  margin: 20px 20px;
-  padding: 50px 20px;
+/* FOOTER */
+.site-footer {
   background: linear-gradient(135deg, #0a1628, #0d3a6e);
-  border-radius: 20px;
   color: white;
-  text-align: center;
+  margin: 20px;
+  border-radius: 20px;
+  overflow: hidden;
 }
-.bottom-cta h2 {
-  font-size: clamp(22px, 3vw, 32px);
+
+.footer-top {
+  display: flex;
+  justify-content: space-between; /* Mendorong brand ke kiri, menu ke kanan */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 36px 48px 24px; /* Padding atas/bawah dikurangi agar tidak terlalu tinggi */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-brand-section {
+  max-width: 300px;
+}
+
+.footer-brand-name {
+  font-size: 18px;
   font-weight: 800;
-  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
 }
-.bottom-cta p {
-  max-width: 500px;
-  margin: 0 auto;
-  line-height: 1.75;
-  opacity: 0.8;
-  font-size: 15px;
+
+.footer-brand-tagline {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.6;
+}
+
+/* Bagian Kanan Footer (Lainnya & Sosial Media) */
+.footer-right-section {
+  display: flex;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.footer-social-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.footer-col-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 14px; /* Dikecilkan sedikit */
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: #ffffff; }
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 48px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-bottom a {
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+}
+.footer-bottom a:hover { color: rgba(255, 255, 255, 0.7); }
+
+/* RESPONSIVE FOOTER */
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    padding: 32px 28px 24px;
+    gap: 32px;
+  }
+  .footer-right-section {
+    gap: 40px;
+  }
+  .footer-bottom {
+    padding: 16px 28px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
 }
 
 /* RESPONSIVE */
@@ -366,14 +466,95 @@ body {
   }
 }
 
+/* ============================================
+   MOBILE RESPONSIVE - LANDING & CARDS
+   ============================================ */
 @media (max-width: 480px) {
+  /* Hero & Search Penyesuaian */
+  .hero-content {
+    padding: 30px 16px 16px;
+  }
   .hero-content h1 {
-    font-size: 24px;
+    font-size: 22px;
+  }
+  .search-main-bar {
+    padding: 6px;
+  }
+  .search-box {
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .search-box input {
-    width: 210px;
+    width: 100%; /* Agar memenuhi ruang sisa */
+    font-size: 14px;
+  }
+  .btn-category-trigger {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  .btn-search-submit {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  /* --- PERUBAHAN CARD 2 KOLOM (2 2 2 2) --- */
+  .section {
+    padding: 24px 16px; 
   }
   .card-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+  }
+  .card {
+    padding: 8px !important; 
+    gap: 6px !important;
+  }
+  .card img {
+    border-radius: 8px !important;
+  }
+  .card h3 {
+    font-size: 11px !important; 
+  }
+  .card span[style*="border-radius: 20px"] {
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+  }
+  .card span[style*="color: #4a6070"] {
+    font-size: 9px !important;
+  }
+  .card .like-btn {
+    font-size: 16px !important;
+  }
+
+  /* Footer Penyesuaian */
+  .footer-top {
+    padding: 24px 16px 20px;
+    gap: 24px;
+  }
+  .footer-brand-section {
+    max-width: 100%;
+  }
+  .footer-right-section {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .footer-bottom {
+    padding: 16px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* --- TAMBAHKAN KODE INI UNTUK MENGUNCI POPUP KATEGORI --- */
+  .category-dropdown {
+    position: relative !important;
+  }
+
+  .category-popup-content {
+    position: absolute !important;
+    top: 45px !important;
+    left: auto !important;
+    right: 0 !important;
+    width: 180px !important;
+    z-index: 5000 !important;
   }
 }

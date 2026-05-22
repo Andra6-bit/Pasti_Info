@@ -37,3 +37,26 @@
         </div>
     </nav>
 </header>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<nav class="mobile-bottom-nav">
+    <?php
+        $session_user = $_SESSION['username'] ?? $_SESSION['user_username'] ?? 'User';
+        $profile_link = ($session_user === 'admin') ? '../admin/admin.php' : 'profile.php';
+        $current_dir = dirname($_SERVER['SCRIPT_NAME']);
+        $home_link = (strpos($current_dir, '/admin') !== false) ? '../pages/landing.php' : 'landing.php';
+    ?>
+    
+    <a href="<?= $home_link ?>" class="mobile-nav-item" title="Beranda">
+        <span class="material-symbols-outlined">home</span>
+    </a>
+    
+    <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
+        <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profil">
+            <span class="material-symbols-outlined">person</span>
+        </a>
+    <?php else: ?>
+        <a href="auth.php" class="mobile-nav-item" title="Login">
+            <span class="material-symbols-outlined">login</span>
+        </a>
+    <?php endif; ?>
+</nav>

@@ -1,0 +1,17 @@
+# Node modules should never be committed
+node_modules/
+
+# PHP / environment files
+.env
+.env.local
+
+# OS files
+.DS_Store
+
+# Editor folders
+.vscode/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

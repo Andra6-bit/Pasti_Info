@@ -272,8 +272,45 @@
         max-height: 420px;
     }
 }
+/* ============================================
+     MOBILE RESPONSIVE - DETAIL LOMBA
+     ============================================ */
 @media (max-width: 480px) {
-    .detail-title { font-size: 20px; }
-    .more-detail-body { padding: 18px 20px; }
-    .detail-info-card { padding: 20px; }
+    .detail-page {
+        margin: 20px auto 40px; 
+        padding: 0 16px;
+        gap: 16px;
+    }
+
+    .detail-info-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .detail-title {
+        font-size: 22px;
+        margin-bottom: 16px;
+    }
+
+    .poster-wrapper {
+        min-height: 240px; /* Poster tidak terlalu panjang ke bawah */
+        border-radius: 16px;
+    }
+
+    .btn-register, .btn-bookmark {
+        height: 40px; /* Tombol disesuaikan agar pas dengan jari */
+        font-size: 13px;
+    }
+
+    .more-detail-header {
+        padding: 16px;
+    }
+
+    .more-detail-body {
+        padding: 16px;
+    }
+
+    .detail-description {
+        font-size: 13.5px;
+    }
 }
