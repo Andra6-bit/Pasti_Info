@@ -37,13 +37,15 @@ if (isset($_GET['delete'])) {
 
 // ── TAMBAH / EDIT (POST) ─────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action      = $_POST['action'] ?? 'add';
-    $post_id     = (int)($_POST['id'] ?? 0);
-    $title       = trim($_POST['title'] ?? '');
-    
-    // 1. LOKASI (Hanya izinkan Online / Offline)
-    $location    = $_POST['location'] ?? 'Online';
-    if (!in_array($location, ['Online', 'Offline'])) $location = 'Online';
+    $action         = $_POST['action'] ?? 'add';
+    $post_id        = (int)($_POST['id'] ?? 0);
+    $title          = trim($_POST['title'] ?? '');
+    $pelaksanaan    = trim($_POST['pelaksanaan'] ?? '');
+    $target_peserta = trim($_POST['target_peserta'] ?? 'Umum');
+    $biaya          = (int)($_POST['biaya'] ?? 0);
+
+    // 1. PELAKSANAAN (Hanya izinkan Online / Offline)
+    if (!in_array($pelaksanaan, ['Online', 'Offline'])) $pelaksanaan = 'Online';
 
     // 2. TANGGAL (Gabungkan pakai koma untuk disimpan ke 1 kolom database)
     $start_date  = $_POST['start_date'] ?? '';
@@ -76,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($msg)) {
         if ($action === 'add') {
             $stmt = mysqli_prepare($koneksi,
-                "INSERT INTO competitions (title, image, location, date_range, category, description) VALUES (?, ?, ?, ?, ?, ?)");
-            mysqli_stmt_bind_param($stmt, "ssssss", $title, $image_name, $location, $date_range, $category, $description);
+                "INSERT INTO competitions (title, image, pelaksanaan, date_range, target_peserta, biaya, category, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            mysqli_stmt_bind_param($stmt, "sssssiss", $title, $image_name, $pelaksanaan, $date_range, $target_peserta, $biaya, $category, $description);
             $ok = mysqli_stmt_execute($stmt);
             $msg = $ok ? "Kompetisi berhasil ditambahkan!" : "Gagal menyimpan data.";
             $msg_type = $ok ? "success" : "error";
@@ -88,8 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (file_exists($p)) unlink($p);
             }
             $stmt = mysqli_prepare($koneksi,
-                "UPDATE competitions SET title=?, image=?, location=?, date_range=?, category=?, description=? WHERE id=?");
-            mysqli_stmt_bind_param($stmt, "ssssssi", $title, $image_name, $location, $date_range, $category, $description, $post_id);
+                "UPDATE competitions SET title=?, image=?, pelaksanaan=?, date_range=?, target_peserta=?, biaya=?, category=?, description=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, "ssssisssi", $title, $image_name, $pelaksanaan, $date_range, $target_peserta, $biaya, $category, $description, $post_id);
             $ok = mysqli_stmt_execute($stmt);
             $msg = $ok ? "Kompetisi berhasil diperbarui!" : "Gagal memperbarui data.";
             $msg_type = $ok ? "success" : "error";

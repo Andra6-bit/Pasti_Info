@@ -36,6 +36,32 @@ if (!empty($params)) {
 }
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
+
+$saved_competitions = [];
+if (isset($_SESSION['status']) && $_SESSION['status'] === 'login') {
+    $current_user = $_SESSION['username'] ?? $_SESSION['user_username'] ?? '';
+    if ($current_user !== '') {
+        $userStmt = mysqli_prepare($koneksi, "SELECT id FROM users WHERE username = ? LIMIT 1");
+        if ($userStmt) {
+            mysqli_stmt_bind_param($userStmt, "s", $current_user);
+            mysqli_stmt_execute($userStmt);
+            $userResult = mysqli_stmt_get_result($userStmt);
+            $userRow = $userResult ? mysqli_fetch_assoc($userResult) : null;
+            if ($userRow) {
+                $user_id = $userRow['id'];
+                $savedStmt = mysqli_prepare($koneksi, "SELECT competition_id FROM saved_competitions WHERE user_id = ?");
+                if ($savedStmt) {
+                    mysqli_stmt_bind_param($savedStmt, "i", $user_id);
+                    mysqli_stmt_execute($savedStmt);
+                    $savedResult = mysqli_stmt_get_result($savedStmt);
+                    while ($savedRow = mysqli_fetch_assoc($savedResult)) {
+                        $saved_competitions[] = (int)$savedRow['competition_id'];
+                    }
+                }
+            }
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -167,6 +193,7 @@ $result = mysqli_stmt_get_result($stmt);
 
 <script src="../Assets/js/landing.js?v=<?= time(); ?>"></script>
 <script src="../Assets/js/floating_search.js?v=<?= time(); ?>"></script>
+<script src="../Assets/js/bookmark.js?v=<?= time(); ?>"></script>
 <?php if (!isset($_SESSION['status']) || $_SESSION['status'] !== "login"): ?>
 <script>
     setTimeout(function() {

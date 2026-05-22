@@ -26,7 +26,7 @@ $total = mysqli_num_rows($all);
                     <th>Gambar</th>
                     <th>Judul</th>
                     <th>Kategori</th>
-                    <th>Lokasi</th>
+                    <th>Pelaksanaan</th>
                     <th>Tanggal</th>
                     <th>Aksi</th>
                 </tr>
@@ -46,7 +46,7 @@ $total = mysqli_num_rows($all);
                         <?= htmlspecialchars($row['category']) ?>
                     </span>
                 </td>
-                <td><?= htmlspecialchars($row['location']) ?></td>
+                <td><?= htmlspecialchars($row['pelaksanaan']) ?></td>
                 
                 <?php
                 // Trik menampilkan format tanggal
@@ -67,8 +67,10 @@ $total = mysqli_num_rows($all);
                             <?= $row['id'] ?>,
                             '<?= addslashes(htmlspecialchars($row['title'])) ?>',
                             '<?= addslashes(htmlspecialchars($row['image'])) ?>',
-                            '<?= addslashes(htmlspecialchars($row['location'])) ?>',
+                            '<?= addslashes(htmlspecialchars($row['pelaksanaan'])) ?>',
                             '<?= addslashes(htmlspecialchars($row['date_range'])) ?>',
+                            '<?= addslashes(htmlspecialchars($row['target_peserta'])) ?>',
+                            '<?= addslashes(htmlspecialchars($row['biaya'])) ?>',
                             '<?= addslashes(htmlspecialchars($row['category'])) ?>',
                             '<?= addslashes(htmlspecialchars($row['description'])) ?>'
                         )">Edit</button>
@@ -109,13 +111,29 @@ $total = mysqli_num_rows($all);
                 </div>
                 
                 <div class="form-group">
-                    <label>Lokasi *</label>
-                    <select name="location" id="f-location" required>
+                    <label>Pelaksanaan *</label>
+                    <select name="pelaksanaan" id="f-pelaksanaan" required>
                         <option value="Online">Online</option>
                         <option value="Offline">Offline</option>
                     </select>
                 </div>
-                
+
+                <div class="form-group">
+                    <label>Target Peserta *</label>
+                    <select name="target_peserta" id="f-target-peserta" required>
+                        <option value="SD">SD</option>
+                        <option value="SMP">SMP</option>
+                        <option value="SMA">SMA</option>
+                        <option value="Mahasiswa">Mahasiswa</option>
+                        <option value="Umum">Umum</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Biaya *</label>
+                    <input type="number" name="biaya" id="f-biaya" min="0" placeholder="0" required>
+                </div>
+
                 <div class="form-group">
                     <label>Kategori *</label>
                     <input type="text" name="category" id="f-category" placeholder="Cth: UI/UX Design, Hacking..." required>

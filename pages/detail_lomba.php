@@ -26,6 +26,29 @@ if (!$lomba) {
     exit();
 }
 
+$saved_lomba = false;
+if (isset($_SESSION['status']) && $_SESSION['status'] === 'login') {
+    $current_user = $_SESSION['username'] ?? $_SESSION['user_username'] ?? '';
+    if ($current_user !== '') {
+        $userStmt = mysqli_prepare($koneksi, "SELECT id FROM users WHERE username = ? LIMIT 1");
+        if ($userStmt) {
+            mysqli_stmt_bind_param($userStmt, "s", $current_user);
+            mysqli_stmt_execute($userStmt);
+            $userResult = mysqli_stmt_get_result($userStmt);
+            $userRow = $userResult ? mysqli_fetch_assoc($userResult) : null;
+            if ($userRow) {
+                $savedStmt = mysqli_prepare($koneksi, "SELECT id FROM saved_competitions WHERE user_id = ? AND competition_id = ? LIMIT 1");
+                if ($savedStmt) {
+                    mysqli_stmt_bind_param($savedStmt, "ii", $userRow['id'], $lomba['id']);
+                    mysqli_stmt_execute($savedStmt);
+                    $savedResult = mysqli_stmt_get_result($savedStmt);
+                    $saved_lomba = $savedResult && mysqli_num_rows($savedResult) > 0;
+                }
+            }
+        }
+    }
+}
+
 function safeText($value) {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
@@ -75,8 +98,8 @@ $imagePath = '../Assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                 <div class="meta-row">
                     <div class="meta-icon">📍</div>
                     <div class="meta-text">
-                        <span class="meta-label">Lokasi</span>
-                        <span class="meta-value"><?php echo safeText($lomba['location'] ?? 'Online/Offline'); ?></span>
+                        <span class="meta-label">Pelaksanaan</span>
+                        <span class="meta-value"><?php echo safeText($lomba['pelaksanaan'] ?? $lomba['location'] ?? 'Online/Offline'); ?></span>
                     </div>
                 </div>
                 <div class="meta-row">
@@ -90,14 +113,14 @@ $imagePath = '../Assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                     <div class="meta-icon">👥</div>
                     <div class="meta-text">
                         <span class="meta-label">Target Peserta</span>
-                        <span class="meta-value"><?php echo safeText($lomba['target'] ?? 'Umum'); ?></span>
+                        <span class="meta-value"><?php echo safeText($lomba['target_peserta'] ?? $lomba['target'] ?? 'Umum'); ?></span>
                     </div>
                 </div>
                 <div class="meta-row">
                     <div class="meta-icon">💰</div>
                     <div class="meta-text">
                         <span class="meta-label">Biaya Pendaftaran</span>
-                        <span class="meta-value"><?php echo safeText($lomba['price'] ?? 'Gratis'); ?></span>
+                        <span class="meta-value"><?php echo isset($lomba['biaya']) && is_numeric($lomba['biaya']) && $lomba['biaya'] > 0 ? 'Rp ' . number_format($lomba['biaya'], 0, ',', '.') : 'Gratis'; ?></span>
                     </div>
                 </div>
             </div>
@@ -116,9 +139,10 @@ $imagePath = '../Assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                     type="button"
                     class="btn-bookmark"
                     title="Simpan lomba"
-                    onclick="/* TODO: Implement bookmark feature */"
+                    style="color: <?php echo $saved_lomba ? '#e53e3e' : '#333'; ?>;"
+                    onclick="toggleBookmark(<?php echo intval($lomba['id']); ?>, this);"
                 >
-                    ♡
+                    <?php echo $saved_lomba ? '♥' : '♡'; ?>
                 </button>
             </div>
 
@@ -165,6 +189,7 @@ $imagePath = '../Assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
         if (e.key === 'Escape') closeLightbox();
     });
 </script>
+<script src="../Assets/js/bookmark.js?v=<?php echo time(); ?>"></script>
 
 </body>
 </html>

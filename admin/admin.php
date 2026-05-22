@@ -9,9 +9,10 @@ include "../config/koneksi.php";
 $username = $_SESSION['username'] ?? $_SESSION['user_username'] ?? 'admin';
 $initial  = strtoupper(substr($username, 0, 1));
 $email = 'Email belum diatur';
+$foto_profile = 'default_user.png';
 
 try {
-    $sql  = "SELECT id, username, email FROM user WHERE username = ?";
+    $sql  = "SELECT id, username, email, foto_profile FROM users WHERE username = ?";
     $stmt = mysqli_prepare($koneksi, $sql);
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "s", $username);
@@ -20,6 +21,7 @@ try {
         if ($result && mysqli_num_rows($result) > 0) {
             $user_data = mysqli_fetch_assoc($result);
             $email = $user_data['email'] ?? 'Email belum diatur';
+            $foto_profile = $user_data['foto_profile'] ?? 'default_user.png';
         }
     }
 } catch (Exception $e) {}
@@ -50,7 +52,9 @@ $active_tab = $_GET['tab'] ?? 'data-diri';
 
         <div class="sidebar">
             <div class="profile-card">
-                <div class="avatar"><?= $initial ?></div>
+                <div class="profile-avatar">
+                    <img src="../Assets/images/<?= htmlspecialchars($foto_profile) ?>" alt="Foto Profil" onerror="this.src='../Assets/images/default_user.png'">
+                </div>
                 <div class="profile-name"><?= htmlspecialchars($username) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($email) ?></div>
                 <span class="admin-badge">⭐ Administrator</span>

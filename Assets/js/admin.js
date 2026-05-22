@@ -14,7 +14,9 @@ function openAdd() {
     document.getElementById('f-id').value                = '';
     document.getElementById('f-old-img').value           = 'default.jpg';
     document.getElementById('f-title').value             = '';
-    document.getElementById('f-location').value          = 'Online';
+    document.getElementById('f-pelaksanaan').value       = 'Online';
+    document.getElementById('f-target-peserta').value    = 'Umum';
+    document.getElementById('f-biaya').value             = '';
     document.getElementById('f-category').value          = '';
     document.getElementById('f-start-date').value        = '';
     document.getElementById('f-end-date').value          = '';
@@ -25,13 +27,15 @@ function openAdd() {
     document.body.style.overflow = 'hidden';
 }
 
-function openEdit(id, title, image, location, date_range, category, desc) {
+function openEdit(id, title, image, pelaksanaan, date_range, target_peserta, biaya, category, desc) {
     document.getElementById('modal-title').textContent   = 'Edit Kompetisi';
     document.getElementById('f-action').value            = 'edit';
     document.getElementById('f-id').value                = id;
     document.getElementById('f-old-img').value           = image;
     document.getElementById('f-title').value             = title;
-    document.getElementById('f-location').value          = location;
+    document.getElementById('f-pelaksanaan').value       = pelaksanaan;
+    document.getElementById('f-target-peserta').value    = target_peserta;
+    document.getElementById('f-biaya').value             = biaya;
     document.getElementById('f-category').value          = category;
     
     let dates = date_range.split(',');
