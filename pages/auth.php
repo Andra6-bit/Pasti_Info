@@ -1,5 +1,5 @@
 <?php
-include "../config/koneksi.php";
+include "../config/database.php";
 
 $posters = [];
 $result  = mysqli_query($koneksi, "SELECT image FROM competitions WHERE image IS NOT NULL AND image != ''");
@@ -20,16 +20,16 @@ if ($has_posters) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth - P Info</title>
-    <link rel="stylesheet" href="../Assets/css/auth.css?v=<?php echo time(); ?>">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="description" content="Login atau daftar ke Pasti Info — platform informasi lomba dan kompetisi terlengkap untuk mahasiswa dan pelajar.">
+    <title>Login & Register — Pasti Info</title>
+    <link rel="stylesheet" href="../assets/css/global.css?v=<?= filemtime(__DIR__ . '/../assets/css/global.css') ?>">
+    <link rel="stylesheet" href="../assets/css/auth.css?v=<?= filemtime(__DIR__ . '/../assets/css/auth.css') ?>">
 </head>
 <body<?php if ($has_posters) echo ' class="has-posters"'; ?>>
-
 
 <!-- ── ANIMATED POSTER BACKGROUND ── -->
 <?php if ($has_posters): ?>
@@ -41,7 +41,7 @@ if ($has_posters) {
             $doubled = array_merge($colPosters, $colPosters);
             foreach ($doubled as $img): ?>
                 <img class="bg-poster"
-                     src="../Assets/images/<?php echo htmlspecialchars($img); ?>"
+                     src="../assets/images/<?php echo htmlspecialchars($img); ?>"
                      alt=""
                      onerror="this.style.display='none';">
             <?php endforeach; ?>
@@ -56,12 +56,12 @@ if ($has_posters) {
 
         <!-- LOGO -->
         <div class="logo-wrap">
-            <img src="../Assets/images/logo.svg" alt="Logo P Info">
+            <img src="../assets/images/logo.svg" alt="Logo P Info">
         </div>
 
         <!-- ALERT -->
-        <div id="alert-container" class="hidden mb-4 p-4 rounded-xl text-sm font-medium animate-pulse border">
-            <!-- Pesan akan masuk ke sini via JS -->
+        <div id="alert-container" class="alert-container hidden animate-pulse">
+            <!-- Messages go here via JS -->
         </div>
 
         <!-- TOGGLE LOGIN/REGISTER -->
@@ -70,71 +70,70 @@ if ($has_posters) {
             <button id="btnRegister" class="toggle-btn" type="button" onclick="showRegister()">Register</button>
         </div>
 
-        <!-- FORM LOGIN -->
-        <form id="loginForm" action="login_proses.php" method="POST">
+        <!-- LOGIN FORM -->
+        <form id="loginForm" action="../controllers/login.php" method="POST">
             <div class="form-group">
                 <label>Username</label>
                 <div class="input-box">
-                    <input type="text" name="username" placeholder="Masukkan username..." required>
+                    <input type="text" name="username" placeholder="Enter username..." required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Password</label>
                 <div class="input-box">
-                    <input type="password" name="password" placeholder="Masukkan password..." required>
+                    <input type="password" name="password" placeholder="Enter password..." required>
                 </div>
             </div>
-            <button type="submit" class="btn-submit">Masuk</button>
+            <button type="submit" class="btn-submit">Login</button>
         </form>
 
-        <!-- FORM REGISTER (Default: Hidden) -->
-        <form id="registerForm" action="register_proses.php" method="POST" style="display:none;">
+        <!-- REGISTER FORM (Default: Hidden) -->
+        <form id="registerForm" action="../controllers/register.php" method="POST" style="display:none;">
             <div class="form-group">
                 <label>Username</label>
                 <div class="input-box">
-                    <input type="text" name="username" placeholder="Masukkan username..." required>
+                    <input type="text" name="username" placeholder="Enter username..." required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Email</label>
                 <div class="input-box">
-                    <input type="email" name="email" placeholder="Masukkan email..." required>
+                    <input type="email" name="email" placeholder="Enter email..." required>
                 </div>
             </div>
             <div class="form-group">
                 <label>Password</label>
                 <div class="input-box">
-                    <input type="password" name="password" placeholder="Masukkan password..." required>
+                    <input type="password" name="password" placeholder="Enter password..." required>
                 </div>
             </div>
             <div class="form-group">
-                <label>Konfirmasi Password</label>
+                <label>Confirm Password</label>
                 <div class="input-box">
-                    <input type="password" name="confirm_password" placeholder="Ulangi password..." required>
+                    <input type="password" name="confirm_password" placeholder="Repeat password..." required>
                 </div>
             </div>
-            <button type="submit" class="btn-submit">Daftar</button>
+            <button type="submit" class="btn-submit">Register</button>
         </form>
 
-        <!-- ── PEMISAH & GOOGLE LOGIN (SEKARANG DI BAWAH SEMUA FORM) ── -->
-        <div class="glow-line"></div> <!-- CSS Tuan akan menampilkan teks "atau" di sini -->
+        <div class="glow-line"></div> <!-- "or" divider style -->
 
         <div class="google-btn-container" style="display: flex; justify-content: center;">
             <div id="g_id_onload"
-                data-client_id="171421878386-imt8jhr76mglv6dkb9ibrijst01dndn1.apps.googleusercontent.com" 
-                data-context="signin"
-                data-ux_mode="popup"
-                data-callback="handleCredentialResponse"
-                data-auto_prompt="false">
+                 data-client_id="171421878386-imt8jhr76mglv6dkb9ibrijst01dndn1.apps.googleusercontent.com" 
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
             </div>
             <div class="g_id_signin"
-                data-type="standard"
-                data-shape="pill" 
-                data-theme="outline"
-                data-text="signin_with"
-                data-size="large"
-                data-logo_alignment="left"
-                data-width="348">
+                 data-type="standard"
+                 data-shape="pill" 
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left"
+                 data-width="348">
             </div>
         </div>
 
@@ -147,7 +146,7 @@ if ($has_posters) {
 function handleCredentialResponse(response) {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = 'google_proses.php';
+    form.action = '../controllers/google-auth.php';
     
     const input = document.createElement('input');
     input.type = 'hidden';
@@ -195,25 +194,21 @@ window.onload = function() {
     const error = urlParams.get('error');
     const tab = urlParams.get('tab');
 
-    // 1. Cek tab mana yang harus dibuka
     if (tab === 'register') {
         showRegister();
     } else {
-        showLogin(); // Pastikan default ke login jika tidak ada instruksi tab
+        showLogin();
     }
 
-    // 2. Tampilkan Alert Cantik
     if (success === '1' || error) {
         alertBox.classList.remove('hidden');
         
         if (success === '1') {
-            alertBox.innerText = "Pendaftaran berhasil! Silakan login.";
-            alertBox.className = "mb-4 p-4 rounded-xl text-sm font-medium border border-green-200 bg-green-50 text-green-700";
+            alertBox.innerText = "Registration successful! Please login.";
+            alertBox.className = "alert-container alert-success";
         } else if (error) {
             alertBox.innerText = decodeURIComponent(error);
-            alertBox.className = "mb-4 p-4 rounded-xl text-sm font-medium border border-red-200 bg-red-50 text-red-700";
-            
-            // HAPUS showRegister() dari sini agar tidak memaksa pindah tab
+            alertBox.className = "alert-container alert-error";
         }
 
         setTimeout(() => {
