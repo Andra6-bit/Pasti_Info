@@ -1,0 +1,249 @@
+/* ============================================================
+   AUTH PAGE — Pasti Info
+   Requires: global.css loaded first
+   ============================================================ */
+
+body {
+  min-height: 100vh;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0d1f35; /* default: dark navy (no posters) */
+}
+
+body.has-posters {
+  background-color: #ffffff;
+}
+
+section {
+  background-color: transparent;
+}
+
+/* ── ANIMATED POSTER BACKGROUND ── */
+.bg-columns {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  gap: 10px;
+  padding: 0 10px;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transform: rotate(15deg) scale(1.5);
+  transform-origin: center;
+}
+
+.bg-col { flex: 1; }
+
+.col-track {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  will-change: transform;
+}
+
+.bg-col:nth-child(1) .col-track { animation: scrollUp   56s linear infinite; }
+.bg-col:nth-child(2) .col-track { animation: scrollDown 64s linear infinite; }
+.bg-col:nth-child(3) .col-track { animation: scrollUp   50s linear infinite; }
+.bg-col:nth-child(4) .col-track { animation: scrollDown 60s linear infinite; }
+.bg-col:nth-child(5) .col-track { animation: scrollUp   70s linear infinite; }
+.bg-col:nth-child(6) .col-track { animation: scrollDown 60s linear infinite; }
+.bg-col:nth-child(7) .col-track { animation: scrollUp   66s linear infinite; }
+
+.bg-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ── MAIN LAYOUT ── */
+section {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 30px 16px;
+  overflow-y: auto;
+}
+
+/* ── LOGIN BOX ── */
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  min-width: 320px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-2xl);
+  padding: 0 36px 40px 36px;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.35),
+    0 4px 16px rgba(0, 0, 0, 0.12);
+  animation: fadeSlideUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── LOGO ── */
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-wrap img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+/* ── TOGGLE LOGIN/REGISTER ── */
+.toggle-group {
+  display: flex;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 28px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-spring);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.toggle-btn.active {
+  background: #ffffff;
+  color: var(--navy);
+  font-weight: 700;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  transform: scale(1.02);
+}
+
+/* ── FORM GROUPS ── */
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 7px;
+}
+
+/* ── INPUT FIELDS ── */
+.input-box {
+  position: relative;
+}
+.input-box input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  color: #1e293b;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  outline: none;
+}
+.input-box input::placeholder {
+  color: var(--text-placeholder);
+  font-size: 13px;
+}
+.input-box input:focus {
+  border-color: #64b5f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
+}
+
+/* ── SUBMIT BUTTON ── */
+.btn-submit {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #1e4d8c 0%, #0d3055 100%);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 4px 16px rgba(13, 48, 85, 0.35);
+}
+.btn-submit:hover {
+  background: linear-gradient(135deg, #0d3055 0%, #0a1e40 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 48, 85, 0.45);
+}
+.btn-submit:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(13, 48, 85, 0.3);
+}
+
+/* ── DIVIDER ── */
+.glow-line {
+  position: relative;
+  height: 1px;
+  background: var(--border-light);
+  margin: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.glow-line::after {
+  content: "atau";
+  background: #ffffff;
+  padding: 0 15px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Google button container */
+.google-btn-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 480px) {
+  section { padding: 20px 16px; }
+
+  .login-box {
+    padding: 0 24px 32px;
+    border-radius: var(--radius-xl);
+    min-width: 100%;
+  }
+  .logo-wrap img { width: 150px; height: 150px; }
+  .glow-line { margin: 24px 0; }
+  .input-box input { padding: 10px 14px; font-size: 13px; }
+  .btn-submit { padding: 12px; font-size: 14px; }
+
+  .bg-columns {
+    gap: 6px;
+    padding: 0 6px;
+    transform: rotate(15deg) scale(2.2);
+  }
+  .bg-poster { border-radius: 6px; }
+}

@@ -1,0 +1,177 @@
+/* ============================================================
+   PROFILE PAGE — Pasti Info
+   Requires: global.css loaded first
+   Most shared classes are in global.css.
+   This file handles profile-specific additions.
+   ============================================================ */
+
+/* ── SAVED COMPETITIONS CARD GRID ── */
+.profile-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  padding: 24px;
+}
+
+@media (max-width: 480px) {
+  .profile-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 16px !important;
+  }
+}
+
+/* ── MODAL POPUP & CHIPS (profile subscriptions) ── */
+.modal-overlay {
+  display: none;
+  opacity: 0;
+}
+.modal-overlay.active {
+  display: flex !important;
+  opacity: 1;
+}
+.modal-overlay.active .modal-box {
+  transform: scale(1) !important;
+}
+
+.category-chip { transition: all 0.2s ease; }
+.category-chip:hover {
+  border-color: #94a3b8 !important;
+  background: var(--bg-tertiary) !important;
+}
+.category-chip.selected {
+  background: #E6F1FB !important;
+  color: #185FA5 !important;
+  border-color: #185FA5 !important;
+}
+
+.subscription-pill { transition: all 0.2s ease; }
+.subscription-pill:hover {
+  background: #d6eaf8 !important;
+  border-color: #185FA5 !important;
+}
+.remove-pill-btn { transition: all 0.15s ease; }
+.remove-pill-btn:hover {
+  background: rgba(24, 95, 165, 0.15) !important;
+  color: #c0392b !important;
+}
+
+/* ── MY SUBMISSIONS TABLE ── */
+.subs-toolbar {
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #fafcff;
+}
+.subs-toolbar .toolbar-info {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.subs-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  margin: 0 24px 24px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.subs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.subs-table thead th {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.subs-table tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-lighter);
+  vertical-align: middle;
+}
+.subs-table tbody tr:last-child td { border-bottom: none; }
+.subs-table tbody tr { transition: background 0.15s; }
+.subs-table tbody tr:hover { background: #f8fbff; }
+
+/* ── SAVED LIST (bookmark list view) ── */
+.saved-list {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+
+.saved-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border-lighter);
+  text-decoration: none;
+  transition: background 0.15s, transform 0.12s;
+  position: relative;
+}
+.saved-item:hover {
+  background: #f5f9ff;
+  transform: translateX(3px);
+}
+.saved-item:last-child { border-bottom: none; }
+
+.saved-item-thumb {
+  width: 72px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.saved-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.saved-item-content { flex: 1; min-width: 0; }
+
+.saved-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.saved-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.saved-meta span { font-weight: 500; }
+
+.saved-item-arrow {
+  flex-shrink: 0;
+  color: #cbd5e1;
+  font-size: 18px;
+  transition: color 0.15s, transform 0.15s;
+}
+.saved-item:hover .saved-item-arrow {
+  color: #185FA5;
+  transform: translateX(2px);
+}
