@@ -1,10 +1,20 @@
-<header class="site-navbar">
+<?php
+$current_script = basename($_SERVER['SCRIPT_NAME']);
+$is_admin_dir = (strpos($current_dir ?? dirname($_SERVER['SCRIPT_NAME']), '/admin') !== false);
+$hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script === 'profile.php' || $is_admin_dir);
+?>
+<header class="site-navbar <?= $hide_top_nav_on_mobile ? 'hide-on-mobile' : '' ?>">
     <nav class="navbar">
         <div class="logo">
             <img src="../assets/images/logo_putih.svg?v=<?= filemtime(__DIR__ . '/../assets/images/logo_putih.svg') ?>" alt="logo" class="logo-img">
         </div>
 
-        <?php include 'floating-search.php'; ?>
+        <?php 
+            $current_script = basename($_SERVER['SCRIPT_NAME']);
+            if ($current_script !== 'chat-ai.php') {
+                include 'floating-search.php';
+            }
+        ?>
 
         <div class="auth-buttons">
             <?php
@@ -30,6 +40,7 @@
                 ?>
                 
                 <a href="<?= $home_link ?>" class="nav-beranda">Home</a>
+                <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="nav-beranda">Chat AI</a>
                 <?php if (!$is_admin): ?>
                     <a href="javascript:void(0)" onclick="openSubmitCompetitionModal()" class="nav-beranda">Submit Lomba</a>
                 <?php endif; ?>
@@ -61,6 +72,11 @@
     <a href="<?= $home_link ?>" class="mobile-nav-item" title="Home">
         <span class="material-symbols-outlined">home</span>
     </a>
+    <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
+        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item" title="Chat AI">
+            <span class="material-symbols-outlined">smart_toy</span>
+        </a>
+    <?php endif; ?>
     
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login" && !$is_admin): ?>
         <a href="javascript:void(0)" onclick="openSubmitCompetitionModal()" class="mobile-nav-item" title="Submit Lomba">

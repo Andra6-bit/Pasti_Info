@@ -88,7 +88,9 @@
   box-shadow: none;
 }
 
-.nav-beranda { margin-right: 12px; }
+.nav-beranda {
+  margin-right: 12px;
+}
 
 /* ── SOLID WHITE — Sign Up (Primary CTA) ── */
 .nav-signup {
@@ -97,12 +99,14 @@
   border-color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
+
 .nav-signup:hover {
   background: #e4eef9 !important;
   border-color: #e4eef9 !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
+
 .nav-signup:active {
   transform: translateY(0);
   box-shadow: none;
@@ -115,12 +119,16 @@
   border-color: transparent !important;
   box-shadow: 0 2px 8px rgba(229, 62, 62, 0.28);
 }
+
 .nav-logout:hover {
   background: #c53030 !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(229, 62, 62, 0.38);
 }
-.nav-logout:active { transform: translateY(0); }
+
+.nav-logout:active {
+  transform: translateY(0);
+}
 
 /* ── GLASS — Admin ── */
 .nav-admin {
@@ -128,6 +136,7 @@
   color: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.28) !important;
 }
+
 .nav-admin:hover {
   background: rgba(255, 255, 255, 0.2) !important;
   transform: translateY(-1px);
@@ -150,6 +159,7 @@
   letter-spacing: 0;
   text-transform: uppercase;
 }
+
 .site-navbar .nav-avatar-button:hover {
   background: #ffffff !important;
   border-color: rgba(255, 255, 255, 0.9) !important;
@@ -157,7 +167,10 @@
   transform: translateY(-1px) scale(1.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-.site-navbar .nav-avatar-button:active { transform: scale(1.0); }
+
+.site-navbar .nav-avatar-button:active {
+  transform: scale(1.0);
+}
 
 /* ── FLOATING SEARCH OVERRIDES ── */
 .navbar-search .search-box input {
@@ -181,7 +194,12 @@
   cursor: pointer;
   transition: background 0.2s, transform 0.15s;
 }
-.navbar-search .btn-search-submit--dark { padding: 0 16px; font-size: 15px; }
+
+.navbar-search .btn-search-submit--dark {
+  padding: 0 16px;
+  font-size: 15px;
+}
+
 .navbar-search .btn-category-trigger--dark:hover,
 .navbar-search .btn-search-submit--dark:hover {
   background: rgba(255, 255, 255, 0.22);
@@ -201,7 +219,10 @@
   backdrop-filter: blur(4px);
   box-sizing: border-box;
 }
-.submit-overlay.open { display: flex; }
+
+.submit-overlay.open {
+  display: flex;
+}
 
 .submit-modal-box {
   background: white;
@@ -235,6 +256,7 @@
   transition: all 0.2s;
   font-size: 18px;
 }
+
 .submit-modal-close:hover {
   background: var(--border-light);
   color: #0f172a;
@@ -242,14 +264,20 @@
 }
 
 /* Submit modal form groups — uses global fg-* from global.css */
-.submit-modal-box .fg { margin-bottom: 16px; }
+.submit-modal-box .fg {
+  margin-bottom: 16px;
+}
+
 .submit-modal-box .fg-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
+
 @media (max-width: 576px) {
-  .submit-modal-box .fg-row { grid-template-columns: 1fr; }
+  .submit-modal-box .fg-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Drop preview in modal */
@@ -275,8 +303,14 @@
     padding: 0 16px;
     height: 60px;
   }
-  .site-navbar .logo-img { height: 40px; }
-  .site-navbar .auth-buttons { gap: 6px; }
+
+  .site-navbar .logo-img {
+    height: 40px;
+  }
+
+  .site-navbar .auth-buttons {
+    gap: 6px;
+  }
 
   :root {
     --btn-h: 32px;
@@ -287,7 +321,10 @@
   }
 
   /* Hide beranda & avatar on mobile (bottom nav handles it) */
-  .nav-beranda { display: none !important; }
+  .nav-beranda {
+    display: none !important;
+  }
+
   .site-navbar .nav-beranda,
   .site-navbar .nav-avatar-button {
     display: none !important;
@@ -295,7 +332,9 @@
 }
 
 /* ── MOBILE BOTTOM NAVIGATION ── */
-.mobile-bottom-nav { display: none; }
+.mobile-bottom-nav {
+  display: none;
+}
 
 @media (max-width: 480px) {
   .mobile-bottom-nav {
@@ -332,7 +371,9 @@
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .mobile-nav-item .material-symbols-outlined { font-size: 22px; }
+  .mobile-nav-item .material-symbols-outlined {
+    font-size: 22px;
+  }
 
   .mobile-nav-item:hover,
   .mobile-nav-item:active {
@@ -350,5 +391,14 @@
     border-color: #ffffff !important;
   }
 
-  body { padding-bottom: 95px; }
+  body {
+    padding-bottom: 95px;
+  }
+}
+
+/* ── HIDE UTILITIES FOR SPECIFIC PAGES ON MOBILE ── */
+@media (max-width: 767px) {
+  .site-navbar.hide-on-mobile {
+    display: none !important;
+  }
 }
