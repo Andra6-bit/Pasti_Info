@@ -195,8 +195,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } while ($uid_exists);
 
         $stmt = mysqli_prepare($koneksi,
-            "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link, payment_status, approval_status, submission_status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', 'approved', 'published')");
         mysqli_stmt_bind_param($stmt, "ssssssisss", $uid, $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link);
         $ok = mysqli_stmt_execute($stmt);
         if ($ok) {
@@ -213,6 +213,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Spawn a separate PHP CLI process so the broadcast never blocks the HTTP
             // response. exec() detaches immediately; redirect happens right after.
             $php_bin = '/opt/lampp/bin/php';
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $php_bin = 'C:\\xampp\\php\\php.exe';
+            }
             if (!file_exists($php_bin) || !is_executable($php_bin)) {
                 $php_bin = 'php'; // Fallback to system PATH
             }
@@ -227,7 +230,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Fire and forget — redirect stdin/stdout/stderr, append &
-            exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                pclose(popen("start /B \"\" " . escapeshellcmd("{$php_bin} {$script} {$comp_arg}") . " > {$log_file} 2>&1", "r"));
+            } else {
+                exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
+            }
 
             header("Location: ../admin/dashboard.php?tab=kelola&msg=" . urlencode($msg) . "&msg_type=" . urlencode($msg_type));
             exit();

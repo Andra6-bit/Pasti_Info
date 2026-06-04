@@ -18,7 +18,7 @@ $koneksi = mysqli_connect(
     $_ENV['DB_HOST'] ?? 'localhost',
     $_ENV['DB_USER'] ?? 'root',
     $_ENV['DB_PASS'] ?? '',
-    $_ENV['DB_NAME'] ?? ''
+    !empty($_ENV['DB_NAME']) ? $_ENV['DB_NAME'] : 'db_pinfo'
 );
 
 // ─── Connection guard ─────────────────────────────────────────────────────────
