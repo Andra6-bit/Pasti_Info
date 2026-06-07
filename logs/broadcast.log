@@ -1,2 +1,0 @@
-[Telegram Error] chat_id=1123456 | response={"ok":false,"error_code":400,"description":"Bad Request: chat not found"}
-sh: line 1: /run/media/dafalah/New Volume/Tools/xampp/htdocs/Pasti_Info/scripts/broadcast-new-competition.php: Permission denied

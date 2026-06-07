@@ -179,6 +179,10 @@ $imagePath = '../assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                     Register Now
                 </a>
                 <?php endif; ?>
+
+                <a href="chat-ai.php?competition_id=<?php echo urlencode($lomba['id']); ?>" class="btn-chat-ai">
+                    <img src="../assets/images/robot-icon.png" alt="Robot" class="robot-icon" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> Chat AI
+                </a>
                 
                 <button
                     type="button"
@@ -193,16 +197,13 @@ $imagePath = '../assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
         </div>
     </div>
 
-    <!-- BOTTOM: More Detail -->
     <div class="more-detail">
         <div class="more-detail-header">
             <span class="dot"></span>
             <h2>More Details</h2>
         </div>
         <div class="more-detail-body">
-            <p class="detail-description">
-                <?php echo nl2br(safeText($lomba['description'] ?? 'Description is not available.')); ?>
-            </p>
+            <p class="detail-description"><?php echo safeText($lomba['description'] ?? 'Description is not available.'); ?></p>
         </div>
     </div>
 

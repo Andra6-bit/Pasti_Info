@@ -34,9 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ─── AI AVATARS CONFIGURATION ───
     const AI_AVATARS = {
-        AMBIS: "../assets/images/avatar-ambis.png",
-        STRATEGIS: "../assets/images/avatar-strategis.png",
-        REALISTIS: "../assets/images/avatar-realistis.png",
+        AMBIS: "../assets/images/avatar-supri.png",
+        STRATEGIS: "../assets/images/avatar-alita.png",
+        REALISTIS: "../assets/images/avatar-budi.png",
         USER: "../assets/images/user_6a117179967cb.jpg" // Fallback user avatar, or custom if session has it
     };
 
@@ -52,6 +52,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // ─── INITIALIZATION ───
     initHistory();
     setupEventListeners();
+
+    // Automatically check if a competition ID was passed in the URL to start a chat session
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlCompId = urlParams.get('competition_id');
+    if (urlCompId && window.dbCompetitions) {
+        const comp = window.dbCompetitions.find(c => String(c.id) === String(urlCompId));
+        if (comp) {
+            selectCompetitionForChat(comp);
+            // Clean URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
 
     // ─── FUNCTIONS ───
 
@@ -297,7 +309,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Menambah gelembung chat ke UI
     function appendMessageBubble(sender, text, time) {
         const isUser = sender === 'USER';
-        const senderLabel = isUser ? 'Kamu' : sender.charAt(0) + sender.slice(1).toLowerCase();
+        let senderLabel = isUser ? 'Kamu' : sender.charAt(0) + sender.slice(1).toLowerCase();
+        if (sender === 'AMBIS') senderLabel = 'Supri';
+        else if (sender === 'REALISTIS') senderLabel = 'Budi';
+        else if (sender === 'STRATEGIS') senderLabel = 'Alita';
         
         const group = document.createElement("div");
         group.className = `msg-group ${isUser ? 'user' : ''}`;
@@ -328,7 +343,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function showTypingIndicator(sender) {
         removeTypingIndicator();
 
-        const senderLabel = sender.charAt(0) + sender.slice(1).toLowerCase();
+        let senderLabel = sender.charAt(0) + sender.slice(1).toLowerCase();
+        if (sender === 'AMBIS') senderLabel = 'Supri';
+        else if (sender === 'REALISTIS') senderLabel = 'Budi';
+        else if (sender === 'STRATEGIS') senderLabel = 'Alita';
         const avatarSrc = getAvatarSrc(sender);
 
         const group = document.createElement("div");
@@ -408,9 +426,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             
             <div class="report-votes">
-                ${getVotePill('Tiara', ambisVote)}
-                ${getVotePill('Raka', stratVote)}
-                ${getVotePill('Karin', realVote)}
+                ${getVotePill('Supri', ambisVote)}
+                ${getVotePill('Alita', stratVote)}
+                ${getVotePill('Budi', realVote)}
             </div>
 
             <div class="report-details-grid">

@@ -93,6 +93,9 @@ if ($action === 'approve') {
         // Spawn a separate PHP CLI process so the broadcast never blocks the HTTP
         // response. exec() detaches immediately; redirect happens right after.
         $php_bin = '/opt/lampp/bin/php';
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $php_bin = 'C:\\xampp\\php\\php.exe';
+        }
         if (!file_exists($php_bin) || !is_executable($php_bin)) {
             $php_bin = 'php'; // Fallback to system PATH
         }
@@ -107,7 +110,11 @@ if ($action === 'approve') {
         }
 
         // Fire and forget — redirect stdin/stdout/stderr, append &
-        exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            pclose(popen("start /B \"\" " . escapeshellcmd("{$php_bin} {$script} {$comp_arg}") . " > {$log_file} 2>&1", "r"));
+        } else {
+            exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
+        }
 
         header("Location: ../admin/dashboard.php?tab=review-lomba&msg=" . urlencode("Competition successfully approved and published!") . "&msg_type=success");
         exit();

@@ -2,6 +2,28 @@
 $current_script = basename($_SERVER['SCRIPT_NAME']);
 $is_admin_dir = (strpos($current_dir ?? dirname($_SERVER['SCRIPT_NAME']), '/admin') !== false);
 $hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script === 'profile.php' || $is_admin_dir);
+
+$profile_picture = 'default_user.png';
+if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
+    if (!isset($koneksi)) {
+        include_once __DIR__ . '/../config/database.php';
+    }
+    if (isset($koneksi)) {
+        $user_id = $_SESSION['user_id'] ?? 0;
+        if ($user_id > 0) {
+            $pic_stmt = mysqli_prepare($koneksi, "SELECT profile_picture FROM users WHERE id = ?");
+            if ($pic_stmt) {
+                mysqli_stmt_bind_param($pic_stmt, "i", $user_id);
+                mysqli_stmt_execute($pic_stmt);
+                $pic_result = mysqli_stmt_get_result($pic_stmt);
+                if ($pic_row = mysqli_fetch_assoc($pic_result)) {
+                    $profile_picture = $pic_row['profile_picture'] ?? 'default_user.png';
+                }
+                mysqli_stmt_close($pic_stmt);
+            }
+        }
+    }
+}
 ?>
 <header class="site-navbar <?= $hide_top_nav_on_mobile ? 'hide-on-mobile' : '' ?>">
     <nav class="navbar">
@@ -40,13 +62,19 @@ $hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script 
                 ?>
                 
                 <a href="<?= $home_link ?>" class="nav-beranda">Home</a>
-                <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="nav-beranda">Chat AI</a>
+                <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="nav-chat-ai">
+                    <img src="../assets/images/robot-icon.png" alt="AI" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;"> Chat AI
+                </a>
                 <?php if (!$is_admin): ?>
                     <a href="javascript:void(0)" onclick="openSubmitCompetitionModal()" class="nav-beranda">Submit Lomba</a>
                 <?php endif; ?>
 
-                <a href="<?= $profile_link ?>" class="nav-avatar-button" title="Hello, <?= htmlspecialchars($session_user) ?>">
-                    <?= $initial ?>
+                <a href="<?= $profile_link ?>" class="nav-avatar-button" title="Hello, <?= htmlspecialchars($session_user) ?>" style="padding:0; overflow:hidden;">
+                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+                        <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Avatar" class="nav-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                    <?php else: ?>
+                        <?= $initial ?>
+                    <?php endif; ?>
                 </a>
 
             <?php else: ?>
@@ -73,8 +101,8 @@ $hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script 
         <span class="material-symbols-outlined">home</span>
     </a>
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
-        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item" title="Chat AI">
-            <span class="material-symbols-outlined">smart_toy</span>
+        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item mobile-chat-ai" title="Chat AI">
+            <img src="../assets/images/robot-icon.png" alt="Chat AI" style="width:24px;height:24px;object-fit:contain;">
         </a>
     <?php endif; ?>
     
@@ -85,8 +113,12 @@ $hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script 
     <?php endif; ?>
     
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
-        <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profile">
-            <span class="material-symbols-outlined">person</span>
+        <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profile" style="padding:0; overflow:hidden;">
+            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+                <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+            <?php else: ?>
+                <span class="material-symbols-outlined">person</span>
+            <?php endif; ?>
         </a>
     <?php else: ?>
         <a href="<?= $auth_link ?>" class="mobile-nav-item" title="Login">

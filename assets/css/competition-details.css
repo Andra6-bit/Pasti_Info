@@ -182,6 +182,41 @@
 }
 .btn-register:active { transform: translateY(0); }
 
+.btn-chat-ai {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  border-radius: var(--radius-lg);
+  border: 2px solid #185fa5;
+  background: #ffffff;
+  color: #185fa5;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(24, 95, 165, 0.12);
+  transition: all 0.2s ease;
+}
+.btn-chat-ai:hover {
+  background: #185fa5;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(24, 95, 165, 0.28);
+  transform: translateY(-1px);
+}
+.btn-chat-ai:active {
+  transform: translateY(0);
+}
+.btn-chat-ai img.robot-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
 .btn-bookmark {
   width: 46px;
   height: 46px;
@@ -242,7 +277,7 @@
   font-size: 14.5px;
   line-height: 1.9;
   color: #3a5570;
-  white-space: pre-line;
+  white-space: pre-wrap;
   margin: 0;
   word-break: break-word;
   overflow-wrap: break-word;
