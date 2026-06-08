@@ -30,3 +30,12 @@ yarn-error.log*
 
 # Allow AI avatar images
 !**/avatar-*.png
+
+# Additional project files to ignore
+/vendor/
+/logs/
+/scripts/db_pinfo_backup.sql
+/scripts/db-migration-structure.sql
+*.log
+Thumbs.db
+/uploads/
