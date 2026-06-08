@@ -14,7 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_num_rows($result) === 1) {
         $user = mysqli_fetch_assoc($result);
 
-        if (password_verify($password, $user['password']) || $password === $user['password']) {
+        // 1-line reason: Remove plaintext password verification fallback to enforce secure password hashing (BCrypt).
+        if (password_verify($password, $user['password'])) {
             $_SESSION['user_id']            = $user['id'];
             $_SESSION['user_username']      = $user['username'];
             $_SESSION['user_role']          = $user['role'];

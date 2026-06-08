@@ -428,26 +428,8 @@ if (!in_array($active_tab, ['profile-info', 'saved-competitions', 'settings', 'm
                     </div>
                 </div>
 
-                <!-- Change Password - View -->
-                <div class="field-rows" id="ganti-password-view" style="border-top: 1px solid #e2e8f0;">
-                    <div class="field-row">
-                        <div class="field-icon-wrap" style="background: #fce8e6; color: #c0392b;">
-                            <i class="ti ti-lock"></i>
-                        </div>
-                        <div class="field-body">
-                            <div class="field-label">Password</div>
-                            <div class="field-value">••••••••••••</div>
-                            <div class="field-sub-note">Change your password regularly for account security</div>
-                        </div>
-                        <div class="field-status">
-                            <button class="edit-btn" onclick="toggleGantiPassword(true)">
-                                <i class="ti ti-lock-open" style="font-size:13px"></i> Change
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Change Password - Form -->
+                <!-- Change Password - Form & View Unified -->
+                <!-- 1-line reason: Rely on change-password-form.php as the single source of truth for the change password section. -->
                 <?php include '../components/change-password-form.php'; ?>
 
 

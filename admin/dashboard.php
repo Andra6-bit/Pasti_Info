@@ -1,12 +1,14 @@
 <?php
 session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_username'] ?? '') !== 'admin') {
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
+    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     header("Location: ../pages/auth.php?error=" . urlencode("Access Denied! Admin only."));
     exit();
 }
 include "../config/database.php";
 
-$username = $_SESSION['username'] ?? $_SESSION['user_username'] ?? 'admin';
+// 1-line reason: Use user_username session key exclusively as the standard username key for session consistency.
+$username = $_SESSION['user_username'] ?? 'admin';
 $initial  = strtoupper(substr($username, 0, 1));
 $email = 'Email not set';
 $profile_picture = 'default_user.png';
@@ -317,25 +319,8 @@ if ($user_id > 0) {
                     </div>
                 <?php endif; ?>
 
-                <div class="field-rows" id="ganti-password-view">
-                    <div class="field-row" style="border-bottom: none;">
-                        <div class="field-icon-wrap" style="background: #fce8e6; color: #c0392b;">
-                            <i class="ti ti-lock"></i>
-                        </div>
-                        <div class="field-body">
-                            <div class="field-label">Password</div>
-                            <div class="field-value">••••••••••••</div>
-                            <div class="field-sub-note">Last changed: unknown</div>
-                        </div>
-                        <div class="field-status">
-                            <button class="edit-btn" onclick="toggleGantiPassword(true)">
-                                <i class="ti ti-lock-open" style="font-size:13px"></i> Change
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Change Password - Form -->
+                <!-- Change Password - Form & View Unified -->
+                <!-- 1-line reason: Rely on change-password-form.php as the single source of truth for the change password section. -->
                 <?php include '../components/change-password-form.php'; ?>
 
                 <!-- Submission Fee Config Form -->

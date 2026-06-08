@@ -31,7 +31,7 @@ function queueTelegramNotification(string $chat_id, string $message)
 
     // Check for recent duplicate (last 60 seconds)
     $dupQuery = "SELECT id FROM telegram_notification_logs 
-                 WHERE chat_id = ? AND message = ? AND status = 'sent' AND created_at >= NOW() - INTERVAL 1 MINUTE LIMIT 1";
+                 WHERE telegram_chat_id = ? AND message = ? AND status = 'sent' AND created_at >= NOW() - INTERVAL 1 MINUTE LIMIT 1";
     $dupStmt = mysqli_prepare($koneksi, $dupQuery);
     if ($dupStmt) {
         mysqli_stmt_bind_param($dupStmt, "ss", $chat_id, $message);
@@ -46,7 +46,7 @@ function queueTelegramNotification(string $chat_id, string $message)
     }
 
     // Insert log in 'pending' status
-    $stmt = mysqli_prepare($koneksi, "INSERT INTO telegram_notification_logs (chat_id, message, status) VALUES (?, ?, 'pending')");
+    $stmt = mysqli_prepare($koneksi, "INSERT INTO telegram_notification_logs (telegram_chat_id, message, status) VALUES (?, ?, 'pending')");
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "ss", $chat_id, $message);
         if (mysqli_stmt_execute($stmt)) {
@@ -70,7 +70,7 @@ function sendQueuedTelegramNotification(int $log_id): bool
 {
     global $koneksi;
 
-    $stmt = mysqli_prepare($koneksi, "SELECT chat_id, message, attempts FROM telegram_notification_logs WHERE id = ? LIMIT 1");
+    $stmt = mysqli_prepare($koneksi, "SELECT telegram_chat_id, message, attempts FROM telegram_notification_logs WHERE id = ? LIMIT 1");
     if (!$stmt) {
         return false;
     }
@@ -85,7 +85,7 @@ function sendQueuedTelegramNotification(int $log_id): bool
         return false;
     }
 
-    $chat_id  = $log['chat_id'];
+    $chat_id  = $log['telegram_chat_id'];
     $message  = $log['message'];
     $attempts = (int)$log['attempts'] + 1;
 

@@ -1,3 +1,23 @@
+<!-- 1-line reason: Single source of truth for Change Password view and form component to eliminate duplication. -->
+<!-- Change Password - View -->
+<div class="field-rows" id="ganti-password-view" style="border-top: 1px solid #e2e8f0; margin-bottom: 0;">
+    <div class="field-row" style="border-bottom: none;">
+        <div class="field-icon-wrap" style="background: #fce8e6; color: #c0392b;">
+            <i class="ti ti-lock"></i>
+        </div>
+        <div class="field-body">
+            <div class="field-label">Password</div>
+            <div class="field-value">••••••••••••</div>
+            <div class="field-sub-note">Change your password regularly for account security</div>
+        </div>
+        <div class="field-status">
+            <button class="edit-btn" onclick="toggleGantiPassword(true)">
+                <i class="ti ti-lock-open" style="font-size:13px"></i> Change
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Change Password - Form -->
 <form id="ganti-password-form" method="POST" action="../controllers/update-password.php" style="display:none;">
     <div class="field-rows">

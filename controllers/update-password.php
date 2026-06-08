@@ -39,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (!password_verify($old_password, $hashed_password) && $old_password !== $hashed_password) {
+    // 1-line reason: Remove plaintext password verification fallback to enforce secure password hashing (BCrypt).
+    if (!password_verify($old_password, $hashed_password)) {
         header("Location: " . $redirect_url . "&error=" . urlencode("Incorrect old password!"));
         exit();
     }

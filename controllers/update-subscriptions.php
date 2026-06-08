@@ -27,7 +27,8 @@ if (!$user) {
 
 $current_role = $user['role'];
 $telegram_chat_id = $user['telegram_chat_id'];
-$redirect_url = ($current_role === 'admin') ? "../admin/dashboard.php?tab=settings" : "../pages/profile.php?tab=settings";
+// 1-line reason: Fix wrong redirect tab parameter to point to the correct pengaturan (settings) tab.
+$redirect_url = ($current_role === 'admin') ? "../admin/dashboard.php?tab=pengaturan" : "../pages/profile.php?tab=pengaturan";
 
 
 

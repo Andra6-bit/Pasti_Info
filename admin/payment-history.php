@@ -6,7 +6,8 @@
  * including invoices, payment settling dates, and refund processing status.
  */
 
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_username'] ?? '') !== 'admin') {
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
+    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     exit('Access denied.');
 }
 

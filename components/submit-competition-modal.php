@@ -391,6 +391,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('End date cannot be before start date.');
                 return false;
             }
+
+            // 1-line reason: Disable submit button and set text to "Mengirim..." to prevent double submissions.
+            const submitBtn = document.getElementById('modal-f-submit');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="ti ti-loader" style="animation: modalSpin 1s linear infinite; display: inline-block; margin-right: 4px;"></i> Mengirim...';
+                if (!document.getElementById('modal-spin-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'modal-spin-style';
+                    style.textContent = '@keyframes modalSpin { 100% { transform: rotate(360deg); } }';
+                    document.head.appendChild(style);
+                }
+            }
         });
     }
 });

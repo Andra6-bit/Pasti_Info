@@ -23,10 +23,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Referrer handling for modal redirects
+// 1-line reason: Validate referrer against an internal path whitelist to prevent open redirect vulnerabilities.
 $referrer = trim($_POST['referrer'] ?? '');
-if (empty($referrer)) {
-    $referrer = '../pages/home.php';
+$parsed = parse_url($referrer);
+$host = $parsed['host'] ?? '';
+$path = $parsed['path'] ?? '';
+$allowed_basenames = ['/', '/index.php', '/pages/home.php', '/pages/profile.php', '/pages/competition-details.php', '/pages/auth.php', '/pages/chat-ai.php'];
+$is_valid_referrer = false;
+if (empty($host) || $host === 'localhost' || $host === '127.0.0.1') {
+    $clean_path = $path;
+    if (strpos($clean_path, '/Pasti_Info') === 0) { $clean_path = substr($clean_path, 11); }
+    if (strpos($clean_path, '../') === 0) { $clean_path = substr($clean_path, 2); }
+    if (in_array($clean_path, $allowed_basenames)) { $is_valid_referrer = true; }
 }
+if (!$is_valid_referrer) { $referrer = '../pages/home.php'; }
 
 function redirectWithError($referrer, $error_msg) {
     $query = "open-submit=1&error=" . urlencode($error_msg);
@@ -175,12 +185,13 @@ do {
     mysqli_stmt_close($uid_check);
 } while ($uid_exists);
 
+// 1-line reason: Remove redundant category and telegram_chat_id columns from insertion since they are stored in normalized tables.
 $ins_query = "
 INSERT INTO competitions (
     uid, title, image, format, date_range, target_audience, registration_fee, 
-    category, description, registration_link, user_id, telegram_chat_id, 
+    description, registration_link, user_id, 
     payment_status, approval_status, submission_status
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unpaid', 'pending', 'unpaid')
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unpaid', 'pending', 'unpaid')
 ";
 
 $stmt = mysqli_prepare($koneksi, $ins_query);
@@ -190,9 +201,9 @@ if (!$stmt) {
 }
 
 mysqli_stmt_bind_param(
-    $stmt, "ssssssisssis", 
+    $stmt, "ssssssisss", 
     $uid, $title, $new_img_name, $format, $date_range, $target_audience, $registration_fee,
-    $category_text, $description, $registration_link, $user_id, $telegram_chat_id
+    $description, $registration_link, $user_id
 );
 
 if (!mysqli_stmt_execute($stmt)) {
@@ -253,8 +264,14 @@ if ($invoice && isset($invoice['id']) && isset($invoice['invoice_url'])) {
     notifyUserTelegram($telegram_chat_id, $msg);
 
     // Redirect user to the Xendit payment link
-    header("Location: " . $invoice_url);
-    exit();
+    // 1-line reason: Validate that the redirect invoice URL belongs to Xendit's official domain (*.xendit.co).
+    $invoice_host = parse_url($invoice_url, PHP_URL_HOST) ?? '';
+    if (preg_match('/^([a-zA-Z0-9-]+\.)*xendit\.co$/', $invoice_host)) {
+        header("Location: " . $invoice_url);
+        exit();
+    } else {
+        redirectWithError($referrer, "Invalid payment gateway URL.");
+    }
 } else {
     // Rollback DB entry and files if Xendit fails
     mysqli_query($koneksi, "DELETE FROM competition_categories WHERE competition_id = " . $new_comp_id);

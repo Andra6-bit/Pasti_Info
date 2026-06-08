@@ -37,7 +37,8 @@ function callXenditAPI(string $endpoint, array $payload, array $headers = [])
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     curl_setopt($ch, CURLOPT_HTTPHEADER, $mergedHeaders);
     curl_setopt($ch, CURLOPT_USERPWD, $secretKey . ':');
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // For local environments
+    // 1-line reason: Enable SSL peer verification for cURL requests to prevent man-in-the-middle (MITM) attacks.
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
 
     $response = curl_exec($ch);

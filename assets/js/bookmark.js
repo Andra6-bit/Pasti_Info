@@ -1,5 +1,6 @@
 async function toggleBookmark(competitionId, button) {
-    if (!competitionId || !button) {
+    // 1-line reason: Check if button is already disabled to prevent multiple simultaneous toggle requests.
+    if (!competitionId || !button || button.disabled) {
         return;
     }
 

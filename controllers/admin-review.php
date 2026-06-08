@@ -8,8 +8,8 @@ session_start();
  * handles automated Xendit refunds on rejection, and triggers Telegram alerts.
  */
 
-$session_user = $_SESSION['username'] ?? $_SESSION['user_username'] ?? '';
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || $session_user !== 'admin') {
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
+    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     header("Location: ../pages/auth.php?error=" . urlencode("Access Denied! Admin only."));
     exit();
 }
@@ -17,6 +17,8 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || $session_u
 require_once '../config/database.php';             // provides $koneksi
 require_once '../helpers/xendit.php';               // provides refundXenditInvoice()
 require_once '../helpers/telegram-notification.php'; // provides Telegram notification helpers
+// 1-line reason: Include the Telegram helper to send broadcasts for approved competitions.
+require_once '../helpers/telegram.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: ../admin/dashboard.php?tab=review-lomba");
@@ -33,7 +35,11 @@ if ($comp_id <= 0 || !in_array($action, ['approve', 'reject'])) {
 }
 
 // Fetch the competition details
-$compQuery = "SELECT title, telegram_chat_id, xendit_invoice_id, payment_status, submission_status FROM competitions WHERE id = ? LIMIT 1";
+// 1-line reason: Retrieve submitter Telegram chat ID from users table using a JOIN to replace redundant telegram_chat_id column.
+$compQuery = "SELECT c.title, u.telegram_chat_id, c.xendit_invoice_id, c.payment_status, c.submission_status 
+              FROM competitions c 
+              JOIN users u ON c.user_id = u.id 
+              WHERE c.id = ? LIMIT 1";
 $compStmt = mysqli_prepare($koneksi, $compQuery);
 if (!$compStmt) {
     header("Location: ../admin/dashboard.php?tab=review-lomba&msg=" . urlencode("Database query error.") . "&msg_type=error");
@@ -89,32 +95,8 @@ if ($action === 'approve') {
         // Notify submitter via Telegram
         notifyApproved($chat_id, $title);
 
-        // ─── TELEGRAM BROADCAST (background exec) ─────────────────────────────
-        // Spawn a separate PHP CLI process so the broadcast never blocks the HTTP
-        // response. exec() detaches immediately; redirect happens right after.
-        $php_bin = '/opt/lampp/bin/php';
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $php_bin = 'C:\\xampp\\php\\php.exe';
-        }
-        if (!file_exists($php_bin) || !is_executable($php_bin)) {
-            $php_bin = 'php'; // Fallback to system PATH
-        }
-        $script    = escapeshellarg(dirname(__DIR__) . '/scripts/broadcast-new-competition.php');
-        $comp_arg  = escapeshellarg((string)$comp_id);
-        $log_file  = escapeshellarg(dirname(__DIR__) . '/logs/broadcast.log');
-
-        // Ensure log directory exists
-        $log_dir = dirname(__DIR__) . '/logs';
-        if (!is_dir($log_dir)) {
-            mkdir($log_dir, 0755, true);
-        }
-
-        // Fire and forget — redirect stdin/stdout/stderr, append &
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            pclose(popen("start /B \"\" " . escapeshellcmd("{$php_bin} {$script} {$comp_arg}") . " > {$log_file} 2>&1", "r"));
-        } else {
-            exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
-        }
+        // 1-line reason: Replace duplicated background broadcast block with helper function call to prevent redundancy.
+        sendTelegramBroadcast($comp_id);
 
         header("Location: ../admin/dashboard.php?tab=review-lomba&msg=" . urlencode("Competition successfully approved and published!") . "&msg_type=success");
         exit();

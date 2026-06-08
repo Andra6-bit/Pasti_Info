@@ -1,0 +1,8 @@
+# 1-line reason: Block direct HTTP/HTTPS access to the sensitive configuration .env file.
+<Files .env>
+    Order Allow,Deny
+    Deny from all
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</Files>

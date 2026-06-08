@@ -68,11 +68,11 @@ while ($cat_row = mysqli_fetch_assoc($all_cats_res)) {
                             onclick='openEdit(<?= htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8') ?>)'>
                             <i class="ti ti-edit" style="font-size:12px"></i> Edit
                         </button>
-                        <a href="../controllers/manage-competitions.php?delete=<?= $row['id'] ?>"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Are you sure you want to delete this competition? This action cannot be undone.')">
-                           <i class="ti ti-trash" style="font-size:12px"></i> Delete
-                        </a>
+                        <!-- UI-GAP fix: Use native modal instead of browser confirm() for delete action -->
+                        <button class="btn btn-danger btn-sm"
+                            onclick="openDeleteModal('../controllers/manage-competitions.php?delete=<?= $row['id'] ?>')">
+                            <i class="ti ti-trash" style="font-size:12px"></i> Delete
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -273,4 +273,70 @@ while ($cat_row = mysqli_fetch_assoc($all_cats_res)) {
 
 <script>
 var ALL_CATS = <?= json_encode($all_cats, JSON_UNESCAPED_UNICODE) ?>;
+</script>
+
+<!-- UI-GAP fix: Native delete confirmation modal (replaces browser confirm()) -->
+<div id="deleteConfirmModal" style="
+    display:none; position:fixed; inset:0; z-index:9999;
+    background:rgba(0,0,0,0.55); align-items:center; justify-content:center;">
+    <div style="
+        background:#fff; border-radius:14px; padding:28px 28px 24px;
+        width:90%; max-width:400px; box-shadow:0 8px 40px rgba(0,0,0,0.22);
+        font-family:inherit; animation:delModalIn 0.18s ease;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:#FEE2E2;
+                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="ti ti-trash" style="font-size:20px;color:#DC2626;"></i>
+            </div>
+            <div>
+                <div style="font-size:15px;font-weight:700;color:#1e293b;">Hapus Kompetisi</div>
+                <div style="font-size:13px;color:#64748b;margin-top:2px;">Tindakan ini tidak dapat dibatalkan.</div>
+            </div>
+        </div>
+        <p style="font-size:13.5px;color:#374151;margin:0 0 22px;">Apakah kamu yakin ingin menghapus kompetisi ini?</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button id="delModalCancelBtn" onclick="closeDeleteModal()"
+                style="padding:8px 18px;border-radius:8px;border:1.5px solid #cbd5e1;
+                    background:#fff;color:#374151;font-size:13px;font-weight:600;cursor:pointer;">
+                Batal
+            </button>
+            <button id="delModalConfirmBtn" onclick="confirmDelete()"
+                style="padding:8px 18px;border-radius:8px;border:none;
+                    background:#DC2626;color:#fff;font-size:13px;font-weight:600;
+                    cursor:pointer;display:flex;align-items:center;gap:7px;">
+                <span id="delModalSpinner" style="display:none;width:14px;height:14px;
+                    border:2px solid rgba(255,255,255,0.4);border-top-color:#fff;
+                    border-radius:50%;animation:delSpin 0.7s linear infinite;"></span>
+                <span id="delModalBtnText">Ya, Hapus</span>
+            </button>
+        </div>
+    </div>
+</div>
+<style>
+@keyframes delModalIn{from{opacity:0;transform:scale(0.93)}to{opacity:1;transform:scale(1)}}
+@keyframes delSpin{to{transform:rotate(360deg)}}
+</style>
+<script>
+var _deleteTargetUrl = '';
+function openDeleteModal(url) {
+    _deleteTargetUrl = url;
+    var modal = document.getElementById('deleteConfirmModal');
+    modal.style.display = 'flex';
+    document.getElementById('delModalConfirmBtn').disabled = false;
+    document.getElementById('delModalSpinner').style.display = 'none';
+    document.getElementById('delModalBtnText').textContent = 'Ya, Hapus';
+}
+function closeDeleteModal() {
+    document.getElementById('deleteConfirmModal').style.display = 'none';
+}
+function confirmDelete() {
+    // UI-GAP fix: Show spinner while navigating to delete URL
+    document.getElementById('delModalConfirmBtn').disabled = true;
+    document.getElementById('delModalSpinner').style.display = 'inline-block';
+    document.getElementById('delModalBtnText').textContent = 'Menghapus...';
+    window.location.href = _deleteTargetUrl;
+}
+document.getElementById('deleteConfirmModal').addEventListener('click', function(e){
+    if (e.target === this) closeDeleteModal();
+});
 </script>

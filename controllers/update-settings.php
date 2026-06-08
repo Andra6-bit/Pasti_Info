@@ -7,8 +7,8 @@ session_start();
  * Updates admin configuration settings (such as submission fee) in the database.
  */
 
-$session_user = $_SESSION['username'] ?? $_SESSION['user_username'] ?? '';
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || $session_user !== 'admin') {
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
+    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     header("Location: ../pages/auth.php?error=" . urlencode("Access Denied! Admin only."));
     exit();
 }

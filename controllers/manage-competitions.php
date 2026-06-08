@@ -1,52 +1,18 @@
 <?php
 session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_username'] ?? '') !== 'admin') {
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
+    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     header("Location: ../pages/auth.php?error=" . urlencode("Access Denied! Admin only."));
     exit();
 }
 include "../config/database.php";
+// 1-line reason: Include the Telegram helper to send broadcasts for approved competitions.
+include "../helpers/telegram.php";
 
 $msg      = '';
 $msg_type = '';
 
-// ── ADD NEW CATEGORY (AJAX) ───────────────────────────────
-if (isset($_POST['action']) && $_POST['action'] === 'add_category') {
-    header('Content-Type: application/json');
-    $cat_name = trim($_POST['name'] ?? '');
-    $cat_name = ucwords(strtolower($cat_name));
-
-    if (empty($cat_name)) {
-        echo json_encode(['ok' => false, 'msg' => 'Category name is empty.']);
-        exit();
-    }
-    if (mb_strlen($cat_name) > 40) {
-        echo json_encode(['ok' => false, 'msg' => 'Category name is too long (max 40 characters).']);
-        exit();
-    }
-    if (!preg_match('/^[\p{L}\p{N}\s\/\-&+.]+$/u', $cat_name)) {
-        echo json_encode(['ok' => false, 'msg' => 'Invalid characters in category name.']);
-        exit();
-    }
-
-    $check = mysqli_prepare($koneksi, "SELECT id FROM categories WHERE LOWER(name) = LOWER(?)");
-    mysqli_stmt_bind_param($check, "s", $cat_name);
-    mysqli_stmt_execute($check);
-    $check_res = mysqli_stmt_get_result($check);
-    if ($existing = mysqli_fetch_assoc($check_res)) {
-        echo json_encode(['ok' => true, 'id' => $existing['id'], 'name' => $cat_name, 'already_exists' => true]);
-        exit();
-    }
-
-    $ins = mysqli_prepare($koneksi, "INSERT INTO categories (name) VALUES (?)");
-    mysqli_stmt_bind_param($ins, "s", $cat_name);
-    if (mysqli_stmt_execute($ins)) {
-        $new_id = mysqli_insert_id($koneksi);
-        echo json_encode(['ok' => true, 'id' => $new_id, 'name' => $cat_name]);
-    } else {
-        echo json_encode(['ok' => false, 'msg' => 'Failed to save category.']);
-    }
-    exit();
-}
+// 1-line reason: Removed internal add_category action block in favor of the unified controllers/add-category.php endpoint.
 
 // ── DELETE COMPETITION ──────────────────────────────────────────────────
 if (isset($_GET['delete'])) {
@@ -153,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category = implode(', ', $cat_names);
 
     $image_name = $_POST['old_image'] ?? 'default.jpg';
+    $new_img = '';
     $upload_err  = '';
 
     if (!empty($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -184,87 +151,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if ($action === 'add') {
-        // Generate a 10-digit unique uid
-        do {
-            $uid = str_pad(random_int(1000000000, 9999999999), 10, '0', STR_PAD_LEFT);
-            $uid_check = mysqli_prepare($koneksi, "SELECT id FROM competitions WHERE uid = ?");
-            mysqli_stmt_bind_param($uid_check, "s", $uid);
-            mysqli_stmt_execute($uid_check);
-            $uid_exists = mysqli_num_rows(mysqli_stmt_get_result($uid_check)) > 0;
-        } while ($uid_exists);
+    // 1-line reason: Wrap database insertion and update operations in try-catch to clean up uploaded images upon execution failure.
+    try {
+        if ($action === 'add') {
+            // Generate a 10-digit unique uid
+            do {
+                $uid = str_pad(random_int(1000000000, 9999999999), 10, '0', STR_PAD_LEFT);
+                $uid_check = mysqli_prepare($koneksi, "SELECT id FROM competitions WHERE uid = ?");
+                mysqli_stmt_bind_param($uid_check, "s", $uid);
+                mysqli_stmt_execute($uid_check);
+                $uid_exists = mysqli_num_rows(mysqli_stmt_get_result($uid_check)) > 0;
+            } while ($uid_exists);
 
-        $stmt = mysqli_prepare($koneksi,
-            "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link, payment_status, approval_status, submission_status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', 'approved', 'published')");
-        mysqli_stmt_bind_param($stmt, "ssssssisss", $uid, $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link);
-        $ok = mysqli_stmt_execute($stmt);
-        if ($ok) {
-            $new_comp_id = mysqli_insert_id($koneksi);
-            foreach ($categories_ids as $cat_id) {
-                $ins_cat = mysqli_prepare($koneksi, "INSERT IGNORE INTO competition_categories (competition_id, category_id) VALUES (?, ?)");
-                mysqli_stmt_bind_param($ins_cat, "ii", $new_comp_id, $cat_id);
-                mysqli_stmt_execute($ins_cat);
-            }
-            $msg = "Competition successfully added!";
-            $msg_type = "success";
+            $stmt = mysqli_prepare($koneksi,
+                "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link, payment_status, approval_status, submission_status)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', 'approved', 'published')");
+            mysqli_stmt_bind_param($stmt, "ssssssisss", $uid, $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link);
+            $ok = mysqli_stmt_execute($stmt);
+            if ($ok) {
+                $new_comp_id = mysqli_insert_id($koneksi);
+                foreach ($categories_ids as $cat_id) {
+                    $ins_cat = mysqli_prepare($koneksi, "INSERT IGNORE INTO competition_categories (competition_id, category_id) VALUES (?, ?)");
+                    mysqli_stmt_bind_param($ins_cat, "ii", $new_comp_id, $cat_id);
+                    mysqli_stmt_execute($ins_cat);
+                }
+                $msg = "Competition successfully added!";
+                $msg_type = "success";
 
-            // ─── TELEGRAM BROADCAST (background exec) ─────────────────────────────
-            // Spawn a separate PHP CLI process so the broadcast never blocks the HTTP
-            // response. exec() detaches immediately; redirect happens right after.
-            $php_bin = '/opt/lampp/bin/php';
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                $php_bin = 'C:\\xampp\\php\\php.exe';
-            }
-            if (!file_exists($php_bin) || !is_executable($php_bin)) {
-                $php_bin = 'php'; // Fallback to system PATH
-            }
-            $script    = escapeshellarg(dirname(__DIR__) . '/scripts/broadcast-new-competition.php');
-            $comp_arg  = escapeshellarg((string)$new_comp_id);
-            $log_file  = escapeshellarg(dirname(__DIR__) . '/logs/broadcast.log');
+                // 1-line reason: Replace background broadcast block with helper function call to prevent redundancy.
+                sendTelegramBroadcast($new_comp_id);
 
-            // Ensure log directory exists
-            $log_dir = dirname(__DIR__) . '/logs';
-            if (!is_dir($log_dir)) {
-                mkdir($log_dir, 0755, true);
-            }
-
-            // Fire and forget — redirect stdin/stdout/stderr, append &
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                pclose(popen("start /B \"\" " . escapeshellcmd("{$php_bin} {$script} {$comp_arg}") . " > {$log_file} 2>&1", "r"));
+                header("Location: ../admin/dashboard.php?tab=kelola&msg=" . urlencode($msg) . "&msg_type=" . urlencode($msg_type));
+                exit();
             } else {
-                exec("{$php_bin} {$script} {$comp_arg} >> {$log_file} 2>&1 &");
+                throw new Exception("Failed to save data");
             }
-
-            header("Location: ../admin/dashboard.php?tab=kelola&msg=" . urlencode($msg) . "&msg_type=" . urlencode($msg_type));
-            exit();
         } else {
-            $msg = "Failed to save data: " . mysqli_error($koneksi);
-            $msg_type = "error";
-        }
-    } else {
-        // Edit — Update data
-        $stmt = mysqli_prepare($koneksi,
-            "UPDATE competitions SET title=?, image=?, format=?, date_range=?, target_audience=?, registration_fee=?, category=?, description=?, registration_link=? WHERE id=?");
-        mysqli_stmt_bind_param($stmt, "sssssisssi", $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link, $post_id);
-        $ok = mysqli_stmt_execute($stmt);
-        if ($ok) {
-            // Update pivot categories table
-            $del_pivot = mysqli_prepare($koneksi, "DELETE FROM competition_categories WHERE competition_id = ?");
-            mysqli_stmt_bind_param($del_pivot, "i", $post_id);
-            mysqli_stmt_execute($del_pivot);
+            // Edit — Update data
+            $stmt = mysqli_prepare($koneksi,
+                "UPDATE competitions SET title=?, image=?, format=?, date_range=?, target_audience=?, registration_fee=?, category=?, description=?, registration_link=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, "sssssisssi", $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link, $post_id);
+            $ok = mysqli_stmt_execute($stmt);
+            if ($ok) {
+                // Update pivot categories table
+                $del_pivot = mysqli_prepare($koneksi, "DELETE FROM competition_categories WHERE competition_id = ?");
+                mysqli_stmt_bind_param($del_pivot, "i", $post_id);
+                mysqli_stmt_execute($del_pivot);
 
-            foreach ($categories_ids as $cat_id) {
-                $ins_cat = mysqli_prepare($koneksi, "INSERT IGNORE INTO competition_categories (competition_id, category_id) VALUES (?, ?)");
-                mysqli_stmt_bind_param($ins_cat, "ii", $post_id, $cat_id);
-                mysqli_stmt_execute($ins_cat);
+                foreach ($categories_ids as $cat_id) {
+                    $ins_cat = mysqli_prepare($koneksi, "INSERT IGNORE INTO competition_categories (competition_id, category_id) VALUES (?, ?)");
+                    mysqli_stmt_bind_param($ins_cat, "ii", $post_id, $cat_id);
+                    mysqli_stmt_execute($ins_cat);
+                }
+                $msg = "Competition successfully updated!";
+                $msg_type = "success";
+            } else {
+                throw new Exception("Failed to update data");
             }
-            $msg = "Competition successfully updated!";
-            $msg_type = "success";
-        } else {
-            $msg = "Failed to update data: " . mysqli_error($koneksi);
-            $msg_type = "error";
         }
+    } catch (Throwable $e) {
+        if (!empty($new_img) && file_exists("../assets/images/" . $new_img)) {
+            unlink("../assets/images/" . $new_img);
+        }
+        $msg = "Failed to save data";
+        $msg_type = "error";
     }
 
     header("Location: ../admin/dashboard.php?tab=kelola&msg=" . urlencode($msg) . "&msg_type=" . urlencode($msg_type));

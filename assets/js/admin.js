@@ -113,7 +113,8 @@ function addNewCategory() {
     fd.append('action', 'add_category');
     fd.append('name', name);
 
-    fetch('../controllers/manage-competitions.php', { method: 'POST', body: fd })
+    // 1-line reason: Update fetch URL to point to the unified add-category.php endpoint.
+    fetch('../controllers/add-category.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(function(data) {
             btn.disabled = false;

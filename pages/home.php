@@ -31,7 +31,8 @@ if (!empty($categories)) {
     $cat_clauses = [];
     foreach ($categories as $cat) {
         if (in_array($cat, $allowed_categories)) {
-            $cat_clauses[] = "category LIKE ?";
+            // 1-line reason: Query categories dynamically from competition_categories and categories tables to replace redundant category column.
+            $cat_clauses[] = "(SELECT GROUP_CONCAT(c.name SEPARATOR ', ') FROM competition_categories cc JOIN categories c ON cc.category_id = c.id WHERE cc.competition_id = competitions.id) LIKE ?";
             $params[] = "%" . $cat . "%";
             $types .= "s";
         }

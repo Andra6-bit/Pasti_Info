@@ -168,6 +168,21 @@ function saveSubscriptions(onSuccess) {
     .then(response => response.json())
     .then(data => {
         if (data.ok) {
+            // 1-line reason: Display a bottom-right toast notification for 3 seconds upon successful subscriptions update.
+            var toast = document.createElement('div');
+            toast.textContent = 'Preferensi berhasil disimpan';
+            toast.style.cssText = 'position: fixed; bottom: 24px; right: 24px; background: #2e7d32; color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 99999; opacity: 0; transform: translateY(10px); transition: all 0.3s ease; pointer-events: none;';
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 50);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+
             if (onSuccess) onSuccess();
         } else {
             alert(data.msg || 'Failed to update subscriptions.');

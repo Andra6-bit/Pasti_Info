@@ -1,4 +1,10 @@
 <?php
+// 1-line reason: Enforce admin session verification to restrict web-based execution to logged-in admins.
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+if ((!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') && php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    exit('Access Denied! Admin only.');
+}
 
 /**
  * scripts/retry-notifications.php

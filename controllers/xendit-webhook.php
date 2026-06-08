@@ -17,12 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ── 1. WEBHOOK VERIFICATION ──────────────────────────────────────────────────
+// 1-line reason: Verify HMAC-SHA256 signature using x-callback-signature header, falling back to callback token if absent.
+$headerSignature = $_SERVER['HTTP_X_CALLBACK_SIGNATURE'] ?? '';
 $headerToken = $_SERVER['HTTP_X_CALLBACK_TOKEN'] ?? '';
 $configToken = $_ENV['XENDIT_WEBHOOK_TOKEN'] ?? '';
-
-if (empty($configToken) || $headerToken !== $configToken) {
+$payloadRaw = file_get_contents('php://input');
+$verified = false;
+if (!empty($configToken)) {
+    if (!empty($headerSignature) && hash_equals(hash_hmac('sha256', $payloadRaw, $configToken), $headerSignature)) {
+        $verified = true;
+    } elseif (!empty($headerToken) && hash_equals($configToken, $headerToken)) {
+        $verified = true;
+    }
+}
+if (!$verified) {
     http_response_code(403);
-    error_log("[Xendit Webhook Warning] Unauthorized webhook attempt. Token mismatch or not set.");
+    error_log("[Xendit Webhook Warning] Unauthorized webhook attempt.");
     exit('Forbidden');
 }
 
@@ -42,8 +52,11 @@ $external_id = $payload['external_id'] ?? '';
 
 error_log("[Xendit Webhook Info] Received callback. invoice_id={$invoice_id} | status={$status} | external_id={$external_id}");
 
-// ── 3. FETCH COMPETITION BY INVOICE ID ────────────────────────────────────────
-$compQuery = "SELECT id, title, telegram_chat_id, payment_status, submission_status FROM competitions WHERE xendit_invoice_id = ? LIMIT 1";
+// 1-line reason: Retrieve submitter Telegram chat ID from users table using a JOIN to replace redundant telegram_chat_id column.
+$compQuery = "SELECT c.id, c.title, u.telegram_chat_id, c.payment_status, c.submission_status 
+              FROM competitions c 
+              JOIN users u ON c.user_id = u.id 
+              WHERE c.xendit_invoice_id = ? LIMIT 1";
 $compStmt  = mysqli_prepare($koneksi, $compQuery);
 
 if (!$compStmt) {

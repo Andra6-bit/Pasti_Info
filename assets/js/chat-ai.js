@@ -34,9 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ─── AI AVATARS CONFIGURATION ───
     const AI_AVATARS = {
-        AMBIS: "../assets/images/avatar-supri.png",
-        STRATEGIS: "../assets/images/avatar-alita.png",
-        REALISTIS: "../assets/images/avatar-budi.png",
+        // 1-line reason: Point avatar image paths to actual existing asset files in assets/images directory.
+        AMBIS: "../assets/images/avatar-ambis.png",
+        STRATEGIS: "../assets/images/avatar-strategis.png",
+        REALISTIS: "../assets/images/avatar-realistis.png",
         USER: "../assets/images/user_6a117179967cb.jpg" // Fallback user avatar, or custom if session has it
     };
 
@@ -310,9 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
     function appendMessageBubble(sender, text, time) {
         const isUser = sender === 'USER';
         let senderLabel = isUser ? 'Kamu' : sender.charAt(0) + sender.slice(1).toLowerCase();
-        if (sender === 'AMBIS') senderLabel = 'Supri';
-        else if (sender === 'REALISTIS') senderLabel = 'Budi';
-        else if (sender === 'STRATEGIS') senderLabel = 'Alita';
+        // 1-line reason: Map AI persona codes to Karin, Tiara, Raka names for UI chat feed bubble display.
+        if (sender === 'AMBIS') senderLabel = 'Tiara';
+        else if (sender === 'REALISTIS') senderLabel = 'Karin';
+        else if (sender === 'STRATEGIS') senderLabel = 'Raka';
         
         const group = document.createElement("div");
         group.className = `msg-group ${isUser ? 'user' : ''}`;
@@ -344,9 +346,10 @@ document.addEventListener("DOMContentLoaded", () => {
         removeTypingIndicator();
 
         let senderLabel = sender.charAt(0) + sender.slice(1).toLowerCase();
-        if (sender === 'AMBIS') senderLabel = 'Supri';
-        else if (sender === 'REALISTIS') senderLabel = 'Budi';
-        else if (sender === 'STRATEGIS') senderLabel = 'Alita';
+        // 1-line reason: Map AI persona codes to Karin, Tiara, Raka names for the typing indicator status message.
+        if (sender === 'AMBIS') senderLabel = 'Tiara';
+        else if (sender === 'REALISTIS') senderLabel = 'Karin';
+        else if (sender === 'STRATEGIS') senderLabel = 'Raka';
         const avatarSrc = getAvatarSrc(sender);
 
         const group = document.createElement("div");
@@ -410,6 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
                </a>`
             : '';
 
+        // 1-line reason: Display the new persona names (Tiara, Raka, Karin) on the final voting results report card.
         card.innerHTML = `
             <div class="report-card-header">
                 <div class="report-card-header-left">
@@ -426,9 +430,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             
             <div class="report-votes">
-                ${getVotePill('Supri', ambisVote)}
-                ${getVotePill('Alita', stratVote)}
-                ${getVotePill('Budi', realVote)}
+                ${getVotePill('Tiara', ambisVote)}
+                ${getVotePill('Raka', stratVote)}
+                ${getVotePill('Karin', realVote)}
             </div>
 
             <div class="report-details-grid">
@@ -512,9 +516,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const session = getActiveSession();
         if (!session || isFetching) return;
 
+        // 1-line reason: Disable sendBtn and show a rotating loading icon during API call to provide visual feedback and prevent spamming.
         isFetching = true;
         chatInput.disabled = true;
         sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="mat" style="animation: chatSpin 1s linear infinite; display: inline-block;">autorenew</span>';
+        if (!document.getElementById('chat-spin-style')) {
+            const style = document.createElement('style');
+            style.id = 'chat-spin-style';
+            style.textContent = '@keyframes chatSpin { 100% { transform: rotate(360deg); } }';
+            document.head.appendChild(style);
+        }
         if (voteBtn) voteBtn.disabled = true;
         refreshVotePromptInFeed();
 
@@ -545,8 +557,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                     queueMessages(parsedMessages);
                 } else {
+                    // 1-line reason: Re-enable sendBtn and restore send icon if response parsing yields no messages.
                     isFetching = false;
                     chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<span class="mat">send</span>';
                     chatInput.focus();
                 }
             } else {
@@ -555,8 +570,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.error(err);
             appendMessageBubble("STRATEGIS", `⚠️ Maaf teman-teman, koneksi internet/server terganggu (${err.message}). Coba lagi nanti ya!`, new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+            // 1-line reason: Re-enable sendBtn and restore send icon if an API error occurs.
             isFetching = false;
             chatInput.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<span class="mat">send</span>';
             chatInput.focus();
         }
     }
@@ -601,9 +619,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function processNext() {
             if (index >= newMessages.length) {
+                // 1-line reason: Re-enable sendBtn and restore send icon when all queued messages are processed.
                 removeTypingIndicator();
                 isFetching = false;
                 chatInput.disabled = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<span class="mat">send</span>';
                 chatInput.focus();
                 
                 const session = getActiveSession();
@@ -643,8 +664,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (index < newMessages.length) {
                     setTimeout(processNext, 850);
                 } else {
+                    // 1-line reason: Re-enable sendBtn and restore send icon when queue ends.
                     isFetching = false;
                     chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<span class="mat">send</span>';
                     chatInput.focus();
                     
                     const userMsgCount = session.messages.filter(m => m.sender === 'USER').length;
@@ -872,9 +896,17 @@ document.addEventListener("DOMContentLoaded", () => {
         renderActiveSession();
 
         // Trigger AI respons awal membahas lomba
+        // 1-line reason: Disable sendBtn and show loading icon when starting a chat for a specific competition.
         isFetching = true;
         chatInput.disabled = true;
         sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="mat" style="animation: chatSpin 1s linear infinite; display: inline-block;">autorenew</span>';
+        if (!document.getElementById('chat-spin-style')) {
+            const style = document.createElement('style');
+            style.id = 'chat-spin-style';
+            style.textContent = '@keyframes chatSpin { 100% { transform: rotate(360deg); } }';
+            document.head.appendChild(style);
+        }
         if (voteBtn) voteBtn.disabled = true;
         refreshVotePromptInFeed();
         showTypingIndicator('REALISTIS');
@@ -901,8 +933,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (parsed.length > 0) {
                     queueMessages(parsed);
                 } else {
+                    // 1-line reason: Re-enable sendBtn and restore send icon when initial competition response is empty.
                     isFetching = false;
                     chatInput.disabled = false;
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<span class="mat">send</span>';
                 }
             } else {
                 throw new Error("Respons awal dari AI kosong.");
@@ -910,8 +945,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (err) {
             console.error(err);
             appendMessageBubble("REALISTIS", `⚠️ Maaf, gagal memicu respons awal AI (${err.message}). Coba ketik pesan apa saja untuk memulai percakapan.`, new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+            // 1-line reason: Re-enable sendBtn and restore send icon if initial competition chat request fails.
             isFetching = false;
             chatInput.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<span class="mat">send</span>';
             chatInput.focus();
         }
     }

@@ -19,7 +19,8 @@ else {
     $time_spent = time() - $_SESSION['guest_start_time'];
 
     if ($time_spent > $guest_timeout) {
-        header("Location: auth.php?error=" . urlencode("Guest preview time expired! Please login to continue searching for competitions."));
+        // 1-line reason: Use absolute path for Location header redirect to prevent path traversal or incorrect resolution issues.
+        header("Location: /Pasti_Info/pages/auth.php?error=" . urlencode("Guest preview time expired! Please login to continue searching for competitions."));
         exit();
     }
 }

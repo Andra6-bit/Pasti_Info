@@ -62,8 +62,9 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
                 ?>
                 
                 <a href="<?= $home_link ?>" class="nav-beranda">Home</a>
+                <!-- 1-line reason: Rename the button to Debate AI and replace the robot icon with debate swords. -->
                 <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="nav-chat-ai">
-                    <img src="../assets/images/robot-icon.png" alt="AI" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;"> Chat AI
+                    <i class="ti ti-swords" style="font-size:16px;vertical-align:middle;margin-right:4px;"></i> Debate AI
                 </a>
                 <?php if (!$is_admin): ?>
                     <a href="javascript:void(0)" onclick="openSubmitCompetitionModal()" class="nav-beranda">Submit Lomba</a>
@@ -84,6 +85,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
         </div>
     </nav>
 </header>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <nav class="mobile-bottom-nav">
     <?php
@@ -101,8 +103,9 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
         <span class="material-symbols-outlined">home</span>
     </a>
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
-        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item mobile-chat-ai" title="Chat AI">
-            <img src="../assets/images/robot-icon.png" alt="Chat AI" style="width:24px;height:24px;object-fit:contain;">
+        <!-- 1-line reason: Rename mobile button title to Debate AI and replace robot image with the swords icon. -->
+        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item mobile-chat-ai" title="Debate AI">
+            <i class="ti ti-swords" style="font-size:22px;"></i>
         </a>
     <?php endif; ?>
     

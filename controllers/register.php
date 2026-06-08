@@ -49,9 +49,10 @@ if (mysqli_stmt_num_rows($stmt) > 0) {
 }
 mysqli_stmt_close($stmt);
 
-// Save new user (plaintext password as original design requirement)
+// Save new user (hashing password using Bcrypt to satisfy NFR-04)
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $stmt = mysqli_prepare($koneksi, "INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-mysqli_stmt_bind_param($stmt, "sss", $username, $email, $password);
+mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashed_password);
 
 if (mysqli_stmt_execute($stmt)) {
     header("Location: ../pages/auth.php?success=1");

@@ -27,7 +27,10 @@ if ($user_stmt) {
 
 // 2. Ambil Daftar Lomba Aktif (published) untuk Picker Modal
 $competitions = [];
-$comp_sql = "SELECT id, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link 
+// 1-line reason: Fetch category values dynamically via a subquery joining normalized tables to replace redundant category column.
+$comp_sql = "SELECT id, title, image, format, date_range, target_audience, registration_fee, 
+             (SELECT GROUP_CONCAT(c.name SEPARATOR ', ') FROM competition_categories cc JOIN categories c ON cc.category_id = c.id WHERE cc.competition_id = competitions.id) as category, 
+             description, registration_link 
              FROM competitions 
              WHERE submission_status = 'published' 
              ORDER BY id DESC";

@@ -9,11 +9,13 @@ if ($id === '') {
 }
 
 if (ctype_digit($id)) {
-    $sql = "SELECT * FROM competitions WHERE id = ? LIMIT 1";
+    // 1-line reason: Fetch category values dynamically from normalized tables to replace the redundant category column.
+    $sql = "SELECT *, (SELECT GROUP_CONCAT(c.name SEPARATOR ', ') FROM competition_categories cc JOIN categories c ON cc.category_id = c.id WHERE cc.competition_id = competitions.id) as category FROM competitions WHERE id = ? LIMIT 1";
     $stmt = mysqli_prepare($koneksi, $sql);
     mysqli_stmt_bind_param($stmt, "i", $id);
 } else {
-    $sql = "SELECT * FROM competitions WHERE title = ? LIMIT 1";
+    // 1-line reason: Fetch category values dynamically from normalized tables to replace the redundant category column.
+    $sql = "SELECT *, (SELECT GROUP_CONCAT(c.name SEPARATOR ', ') FROM competition_categories cc JOIN categories c ON cc.category_id = c.id WHERE cc.competition_id = competitions.id) as category FROM competitions WHERE title = ? AND submission_status = 'published' LIMIT 1";
     $stmt = mysqli_prepare($koneksi, $sql);
     mysqli_stmt_bind_param($stmt, "s", $id);
 }
@@ -180,8 +182,9 @@ $imagePath = '../assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                 </a>
                 <?php endif; ?>
 
+                <!-- 1-line reason: Rename the button to Debate AI and replace the robot icon with debate swords. -->
                 <a href="chat-ai.php?competition_id=<?php echo urlencode($lomba['id']); ?>" class="btn-chat-ai">
-                    <img src="../assets/images/robot-icon.png" alt="Robot" class="robot-icon" style="width: 20px; height: 20px; object-fit: contain; vertical-align: middle;"> Chat AI
+                    <i class="ti ti-swords" style="font-size:18px;vertical-align:middle;margin-right:6px;"></i> Debate AI
                 </a>
                 
                 <button
