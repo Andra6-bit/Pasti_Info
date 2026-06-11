@@ -68,57 +68,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ─── FUNCTIONS ───
 
-    // Memuat Riwayat Diskusi dari LocalStorage
-    function initHistory() {
-        const stored = localStorage.getItem('pasti_info_chat_history');
-        if (stored) {
-            try {
-                sessions = JSON.parse(stored);
-            } catch (e) {
-                console.error("Failed to parse chat history:", e);
-                sessions = [];
+    // Memuat Riwayat Diskusi dari Database
+    async function initHistory() {
+        try {
+            const res = await fetch("../controllers/debate-sessions.php");
+            const data = await res.json();
+            if (data.success) {
+                sessions = data.sessions || [];
             }
+        } catch (e) {
+            console.error("Failed to load chat history from database:", e);
+            sessions = [];
         }
 
         // Jika tidak ada riwayat, buat diskusi kasual default
         if (sessions.length === 0) {
-            const defaultSession = createNewSessionObject(null);
-            sessions = [defaultSession];
-            saveSessions();
+            const defaultSession = await createNewSessionOnBackend(null);
+            if (defaultSession) {
+                sessions = [defaultSession];
+            }
         }
 
-        // Tentukan sesi aktif pertama
-        activeSessionId = sessions[0].id;
+        if (sessions.length > 0) {
+            // Tentukan sesi aktif pertama
+            activeSessionId = sessions[0].id;
+        }
         renderHistoryList();
         renderActiveSession();
     }
 
-    // Helper untuk membuat Sesi Diskusi Baru
-    function createNewSessionObject(comp) {
+    // Helper untuk membuat Sesi Diskusi Baru di Backend
+    async function createNewSessionOnBackend(comp) {
         const id = Date.now().toString() + Math.random().toString(36).substring(2, 11);
-        const initialMsg = comp
-            ? {
-                sender: 'STRATEGIS',
-                text: `Halo! Kita lihat kamu tertarik sama <strong>${comp.title}</strong>. Yuk kita bedah kesiapanmu dari berbagai sudut pandang! 🎯`,
-                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-              }
-            : {
-                sender: 'AMBIS',
-                text: `Halo! Ada info lomba seru dari luar ya? Coba ceritain di sini dong nama lomba, biaya, dan hadiahnya, biar kita berdebat kelayakanmu!`,
-                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-              };
+        const initialSender = comp ? 'STRATEGIS' : 'AMBIS';
+        const initialText = comp
+            ? `Halo! Kita lihat kamu tertarik sama <strong>${comp.title}</strong>. Yuk kita bedah kesiapanmu dari berbagai sudut pandang! 🎯`
+            : `Halo! Ada info lomba seru dari luar ya? Coba ceritain di sini dong nama lomba, biaya, dan hadiahnya, biar kita berdebat kelayakanmu!`;
 
-        return {
-            id,
-            competition: comp,
-            messages: [initialMsg],
-            isVotingDone: false,
-            createdAt: new Date().toISOString(),
-        };
+        try {
+            const res = await fetch("../controllers/debate-sessions.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: 'create_session',
+                    id: id,
+                    competition_id: comp ? comp.id : null,
+                    initial_message: initialText,
+                    initial_sender: initialSender
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                return {
+                    id,
+                    competition: comp,
+                    messages: [{
+                        sender: initialSender,
+                        text: initialText,
+                        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+                    }],
+                    isVotingDone: false,
+                    createdAt: new Date().toISOString()
+                };
+            }
+        } catch (e) {
+            console.error("Failed to create session on backend:", e);
+        }
+        return null;
     }
 
     function saveSessions() {
-        localStorage.setItem('pasti_info_chat_history', JSON.stringify(sessions));
+        // No-op: Saved individually on database
     }
 
     function getActiveSession() {
@@ -554,6 +574,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (parsedMessages.length > 0) {
                     if (isVote) {
                         session.isVotingDone = true;
+                        
+                        // Update voting status on backend
+                        fetch("../controllers/debate-sessions.php", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                action: 'update_voting_status',
+                                session_id: session.id,
+                                isVotingDone: 1
+                            })
+                        }).catch(e => console.error("Failed to update voting status:", e));
                     }
                     queueMessages(parsedMessages);
                 } else {
@@ -631,7 +662,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const userMsgCount = session.messages.filter(m => m.sender === 'USER').length;
                 if (voteBtn) voteBtn.disabled = (session.isVotingDone || userMsgCount < 2);
                 refreshVotePromptInFeed();
-                saveSessions();
                 renderHistoryList();
                 return;
             }
@@ -651,6 +681,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     const msgWithTime = { ...nextMsg, time: timeStr };
                     session.messages.push(msgWithTime);
 
+                    // Save AI message to database
+                    fetch("../controllers/debate-sessions.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            action: 'save_message',
+                            session_id: session.id,
+                            sender: nextMsg.sender,
+                            text: nextMsg.text
+                        })
+                    }).catch(e => console.error("Failed to save AI message:", e));
+
                     if (nextMsg.sender === 'FINAL_REPORT_JSON') {
                         renderFinalReportCard(nextMsg.text);
                     } else {
@@ -659,7 +701,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 index++;
-                saveSessions();
 
                 if (index < newMessages.length) {
                     setTimeout(processNext, 850);
@@ -713,27 +754,38 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Reset Current Discussion
-        resetBtn.addEventListener("click", () => {
+        resetBtn.addEventListener("click", async () => {
             if (isFetching || !confirm("Apakah Anda yakin ingin mereset obrolan aktif ini? Semua percakapan saat ini akan dihapus.")) return;
             
             const session = getActiveSession();
             if (!session) return;
 
-            const initialMsg = session.competition
-                ? {
-                    sender: 'STRATEGIS',
-                    text: `Halo! Kita lihat kamu tertarik sama <strong>${session.competition.title}</strong>. Yuk kita bedah kesiapanmu dari berbagai sudut pandang! 🎯`,
-                    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                  }
-                : {
-                    sender: 'AMBIS',
-                    text: `Halo! Ada info lomba seru dari luar ya? Coba ceritain di sini dong nama lomba, biaya, dan hadiahnya, biar kita berdebat kelayakanmu!`,
-                    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
-                  };
+            const initialSender = session.competition ? 'STRATEGIS' : 'AMBIS';
+            const initialText = session.competition
+                ? `Halo! Kita lihat kamu tertarik sama <strong>${session.competition.title}</strong>. Yuk kita bedah kesiapanmu dari berbagai sudut pandang! 🎯`
+                : `Halo! Ada info lomba seru dari luar ya? Coba ceritain di sini dong nama lomba, biaya, dan hadiahnya, biar kita berdebat kelayakanmu!`;
 
-            session.messages = [initialMsg];
+            try {
+                await fetch("../controllers/debate-sessions.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: 'reset_session',
+                        session_id: session.id,
+                        initial_message: initialText,
+                        initial_sender: initialSender
+                    })
+                });
+            } catch (e) {
+                console.error("Failed to reset session on backend:", e);
+            }
+
+            session.messages = [{
+                sender: initialSender,
+                text: initialText,
+                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            }];
             session.isVotingDone = false;
-            saveSessions();
             renderActiveSession();
         });
 
@@ -763,14 +815,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Memulai Diskusi Kasual dari Modal Picker
-        externalChatBtn.addEventListener("click", () => {
+        externalChatBtn.addEventListener("click", async () => {
             closePickerModal();
-            const newSess = createNewSessionObject(null);
-            sessions.unshift(newSess);
-            activeSessionId = newSess.id;
-            saveSessions();
-            renderHistoryList();
-            renderActiveSession();
+            const newSess = await createNewSessionOnBackend(null);
+            if (newSess) {
+                sessions.unshift(newSess);
+                activeSessionId = newSess.id;
+                renderHistoryList();
+                renderActiveSession();
+            }
         });
     }
 
@@ -788,24 +841,49 @@ document.addEventListener("DOMContentLoaded", () => {
         const userMsg = { sender: 'USER', text: text, time: timeStr };
         
         session.messages.push(userMsg);
-        saveSessions();
+        
+        // Save user message to database
+        fetch("../controllers/debate-sessions.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                action: 'save_message',
+                session_id: session.id,
+                sender: 'USER',
+                text: text
+            })
+        }).catch(e => console.error("Failed to save user message:", e));
+
         renderHistoryList();
         
         appendMessageBubble('USER', text, timeStr);
         sendMessageToAI(false);
     }
 
-    function deleteSession(id) {
+    async function deleteSession(id) {
+        try {
+            await fetch("../controllers/debate-sessions.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    action: 'delete_session',
+                    session_id: id
+                })
+            });
+        } catch (e) {
+            console.error("Failed to delete session on backend:", e);
+        }
+
         sessions = sessions.filter(s => s.id !== id);
         
         if (sessions.length === 0) {
-            const defaultSess = createNewSessionObject(null);
-            sessions = [defaultSess];
+            const defaultSess = await createNewSessionOnBackend(null);
+            if (defaultSess) {
+                sessions = [defaultSess];
+            }
         }
-
-        saveSessions();
         
-        if (activeSessionId === id) {
+        if (activeSessionId === id && sessions.length > 0) {
             activeSessionId = sessions[0].id;
         }
 
@@ -888,10 +966,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Buat sesi baru
-        const newSess = createNewSessionObject(comp);
+        const newSess = await createNewSessionOnBackend(comp);
+        if (!newSess) {
+            isFetching = false;
+            return;
+        }
         sessions.unshift(newSess);
         activeSessionId = newSess.id;
-        saveSessions();
         renderHistoryList();
         renderActiveSession();
 

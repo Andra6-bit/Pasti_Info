@@ -414,4 +414,35 @@ ALTER TABLE `saved_competitions`
 ALTER TABLE `user_category_subscriptions`
   ADD CONSTRAINT `fk_ucs_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_ucs_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Table structure for table `debate_sessions`
+--
+CREATE TABLE IF NOT EXISTS `debate_sessions` (
+  `id` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `competition_id` int(11) DEFAULT NULL,
+  `is_voting_done` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_debate_sess_user` (`user_id`),
+  KEY `fk_debate_sess_comp` (`competition_id`),
+  CONSTRAINT `fk_debate_sess_comp` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_debate_sess_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+--
+-- Table structure for table `debate_messages`
+--
+CREATE TABLE IF NOT EXISTS `debate_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(50) NOT NULL,
+  `sender` varchar(30) NOT NULL,
+  `message_text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `fk_debate_msg_sess` (`session_id`),
+  CONSTRAINT `fk_debate_msg_sess` FOREIGN KEY (`session_id`) REFERENCES `debate_sessions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
 COMMIT;

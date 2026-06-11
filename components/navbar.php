@@ -71,11 +71,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
                 <?php endif; ?>
 
                 <a href="<?= $profile_link ?>" class="nav-avatar-button" title="Hello, <?= htmlspecialchars($session_user) ?>" style="padding:0; overflow:hidden;">
-                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
-                        <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Avatar" class="nav-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-                    <?php else: ?>
-                        <?= $initial ?>
-                    <?php endif; ?>
+                    <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Avatar" class="nav-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
                 </a>
 
             <?php else: ?>
@@ -117,11 +113,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
     
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
         <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profile" style="padding:0; overflow:hidden;">
-            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
-                <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-            <?php else: ?>
-                <span class="material-symbols-outlined">person</span>
-            <?php endif; ?>
+            <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
         </a>
     <?php else: ?>
         <a href="<?= $auth_link ?>" class="mobile-nav-item" title="Login">

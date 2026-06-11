@@ -68,6 +68,10 @@ $current_dir = dirname($_SERVER['SCRIPT_NAME']);
 $action_url = (strpos($current_dir, '/admin') !== false || strpos($current_dir, '/pages') !== false) 
     ? '../controllers/submit-competition.php' 
     : 'controllers/submit-competition.php';
+
+$add_cat_url = (strpos($current_dir, '/admin') !== false || strpos($current_dir, '/pages') !== false) 
+    ? '../controllers/add-category.php' 
+    : 'controllers/add-category.php';
 ?>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -204,6 +208,14 @@ $action_url = (strpos($current_dir, '/admin') !== false || strpos($current_dir, 
                     </label>
                     <?php endforeach; ?>
                 </div>
+                <div class="add-cat-row">
+                    <input type="text" id="modal-new-cat-input" placeholder="Add new category..."
+                           maxlength="40" class="fg-input" style="flex:1;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="modal-add-cat-btn" onclick="addNewCategoryFromModal()">
+                        <i class="ti ti-plus"></i> Add
+                    </button>
+                </div>
+                <div class="add-cat-msg" id="modal-add-cat-msg" style="display:none;"></div>
             </div>
 
             <!-- REGISTRATION LINK -->
@@ -458,5 +470,81 @@ function removeModalImage(event) {
     document.getElementById('modal-drop-preview').style.display = 'none';
     document.getElementById('modal-previewImg').src = '';
     document.getElementById('modal-preview-filename').textContent = '';
+}
+
+function addNewCategoryFromModal() {
+    const input = document.getElementById('modal-new-cat-input');
+    const name  = input.value.trim();
+
+    if (!name) { showModalCatMsg('Please type a category name first.', 'error'); return; }
+    if (name.length > 40) { showModalCatMsg('Category name is too long (max 40 characters).', 'error'); return; }
+
+    const btn = document.getElementById('modal-add-cat-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ti ti-loader" style="animation: modalSpin 1s linear infinite; display: inline-block;"></i>';
+
+    const fd = new FormData();
+    fd.append('action', 'add_category');
+    fd.append('name', name);
+
+    fetch('<?= $add_cat_url ?>', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(function(data) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ti ti-plus"></i> Add';
+            if (data.ok) {
+                if (data.already_exists) {
+                    const existChip = document.querySelector('#modal-category-grid .cat-chip[data-id="' + data.id + '"]');
+                    if (existChip) {
+                        const cb = existChip.querySelector('.cat-cb');
+                        cb.checked = true;
+                        existChip.classList.add('selected');
+                        existChip.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                    showModalCatMsg('Category already exists and has been selected.', 'info');
+                } else {
+                    appendModalCategoryChip(data.id, data.name, true);
+                    showModalCatMsg('Category "' + data.name + '" successfully added!', 'success');
+                }
+                input.value = '';
+            } else {
+                showModalCatMsg(data.msg || 'Failed to add category.', 'error');
+            }
+        })
+        .catch(function() {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ti ti-plus"></i> Add';
+            showModalCatMsg('Connection failed, please try again.', 'error');
+        });
+}
+
+function appendModalCategoryChip(id, name, selected) {
+    const grid = document.getElementById('modal-category-grid');
+    if (!grid) return;
+    const chip = document.createElement('label');
+    chip.className = 'cat-chip' + (selected ? ' selected' : '');
+    chip.setAttribute('data-id', id);
+    chip.innerHTML = '<input type="checkbox" name="categories[]" value="' + id + '" class="cat-cb"' + (selected ? ' checked' : '') + '>' + name;
+    
+    // Add event listener to new chip
+    const cb = chip.querySelector('.cat-cb');
+    cb.addEventListener('change', function() {
+        if (this.checked) {
+            chip.classList.add('selected');
+        } else {
+            chip.classList.remove('selected');
+        }
+    });
+    
+    grid.appendChild(chip);
+}
+
+function showModalCatMsg(msg, type) {
+    const el = document.getElementById('modal-add-cat-msg');
+    if (!el) return;
+    el.textContent = msg;
+    el.className   = 'add-cat-msg add-cat-msg-' + type;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 3500);
 }
 </script>

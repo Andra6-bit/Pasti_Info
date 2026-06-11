@@ -115,14 +115,9 @@ if (!in_array($active_tab, ['profile-info', 'saved-competitions', 'settings', 'm
         <div class="sidebar">
             <div class="profile-card">
                 <div class="profile-avatar">
-                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
-                        <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" 
-                            onerror="this.onerror=null; this.style.display='none'; document.getElementById('profile-fallback-avatar').style.display='inline';" 
-                            alt="Profile Photo">
-                        <span id="profile-fallback-avatar" style="display: none;"><?= $initial ?></span>
-                    <?php else: ?>
-                        <?= $initial ?>
-                    <?php endif; ?>
+                    <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" 
+                        onerror="this.onerror=null; this.src='../assets/images/default_user.png';" 
+                        alt="Profile Photo">
                 </div>
                 <div class="profile-name"><?= htmlspecialchars($username) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($email) ?></div>

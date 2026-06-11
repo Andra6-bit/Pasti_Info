@@ -51,11 +51,7 @@ $search_action = (strpos($fs_current_dir, '/admin') !== false) ? '../pages/home.
             $fs_initial = strtoupper(substr($fs_user, 0, 1));
         ?>
         <a href="<?= $fs_profile_link ?>" class="floating-profile-btn" title="Open Profile of <?= htmlspecialchars($fs_user) ?>" style="padding:0; overflow:hidden;">
-            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
-                <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-            <?php else: ?>
-                <?= $fs_initial ?>
-            <?php endif; ?>
+            <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
         </a>
     <?php endif; ?>
 </div>
