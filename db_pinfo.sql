@@ -1,271 +1,417 @@
--- MariaDB dump 10.19  Distrib 10.4.32-MariaDB, for Win64 (AMD64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost    Database: db_pinfo
--- ------------------------------------------------------
--- Server version	10.4.32-MariaDB
+-- Host: localhost
+-- Generation Time: Jun 11, 2026 at 04:10 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Database: `db_pinfo`
+--
+CREATE DATABASE IF NOT EXISTS `db_pinfo` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `db_pinfo`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `activity_logs`
+--
+
+CREATE TABLE `activity_logs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `action` varchar(100) NOT NULL,
+  `target_table` varchar(50) DEFAULT NULL,
+  `target_id` int(11) DEFAULT NULL,
+  `old_value` text DEFAULT NULL,
+  `new_value` text DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `categories`
 --
 
-DROP TABLE IF EXISTS `categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
 --
 
-LOCK TABLES `categories` WRITE;
-/*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (7,'Bisnis'),(10,'Debat'),(1,'Design'),(13,'Esports'),(8,'Fotografi'),(3,'Hacking'),(4,'Matematika'),(9,'Musik'),(12,'Olahraga'),(2,'Programming'),(11,'Riset'),(6,'Robotika'),(5,'Sains'),(14,'Umum');
-/*!40000 ALTER TABLE `categories` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `categories` (`id`, `name`) VALUES
+(7, 'Bisnis'),
+(10, 'Debat'),
+(1, 'Design'),
+(13, 'Esports'),
+(8, 'Fotografi'),
+(3, 'Hacking'),
+(4, 'Matematika'),
+(9, 'Musik'),
+(12, 'Olahraga'),
+(2, 'Programming'),
+(11, 'Riset'),
+(6, 'Robotika'),
+(5, 'Sains'),
+(14, 'Umum');
 
---
--- Table structure for table `competition_categories`
---
-
-DROP TABLE IF EXISTS `competition_categories`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `competition_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `competition_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `competition_id` (`competition_id`),
-  KEY `category_id` (`category_id`),
-  CONSTRAINT `competition_categories_ibfk_1` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `competition_categories_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `competition_categories`
---
-
-LOCK TABLES `competition_categories` WRITE;
-/*!40000 ALTER TABLE `competition_categories` DISABLE KEYS */;
-INSERT INTO `competition_categories` VALUES (5,2,3),(6,2,4),(7,2,2),(8,2,6),(10,3,13);
-/*!40000 ALTER TABLE `competition_categories` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `competitions`
 --
 
-DROP TABLE IF EXISTS `competitions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `competitions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `uid` char(10) NOT NULL,
   `title` varchar(255) NOT NULL,
   `image` varchar(255) DEFAULT 'default.jpg',
   `format` varchar(100) DEFAULT NULL,
   `date_range` varchar(100) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
   `target_audience` varchar(100) DEFAULT NULL,
-  `registration_fee` int(11) DEFAULT 0,
-  `category` varchar(100) DEFAULT NULL,
+  `registration_fee` int(11) NOT NULL DEFAULT 0,
   `description` longtext DEFAULT NULL,
   `registration_link` varchar(500) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
-  `telegram_chat_id` varchar(50) DEFAULT NULL,
-  `payment_status` varchar(20) DEFAULT 'unpaid',
-  `approval_status` varchar(20) DEFAULT 'pending',
-  `submission_status` varchar(20) DEFAULT 'draft',
+  `payment_status` enum('unpaid','paid','refunded','failed','expired') NOT NULL DEFAULT 'unpaid',
+  `approval_status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `submission_status` enum('draft','published','unpublished','pending_review','rejected','expired','unpaid') NOT NULL DEFAULT 'draft',
   `xendit_invoice_id` varchar(100) DEFAULT NULL,
   `xendit_invoice_url` varchar(500) DEFAULT NULL,
   `paid_at` datetime DEFAULT NULL,
   `refunded_at` datetime DEFAULT NULL,
-  `refund_status` varchar(20) DEFAULT NULL,
+  `refund_status` enum('none','pending','success','failed') DEFAULT 'none',
   `reviewed_by` int(11) DEFAULT NULL,
   `review_note` text DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `competitions`
 --
 
-LOCK TABLES `competitions` WRITE;
-/*!40000 ALTER TABLE `competitions` DISABLE KEYS */;
-INSERT INTO `competitions` VALUES (2,'6053545684','Gemastik XIX','comp_6a1117303bc44.png','Online','2026-04-26,2026-05-21','Umum',0,'Hacking, Matematika, Programming, Robotika','Perbaiki halaman profil pada bagian tab \"Data Diri\" agar dapat berfungsi dengan baik untuk user biasa maupun admin.\r\n\r\nKetentuan:\r\n- User biasa dapat melihat dan mengedit data diri mereka sendiri\r\n- Admin juga dapat mengedit data diri mereka sendiri\r\n- Role tidak boleh bisa diubah dari halaman profile\r\n- Role hanya ditampilkan sebagai informasi/read-only\r\n- Backend juga harus memblokir perubahan role meskipun request dimanipulasi\r\n\r\nTugas:\r\n- Periksa form profile\r\n- Periksa proses update profile\r\n- Pastikan semua field tersimpan dengan benar ke database\r\n- Pastikan session dan validasi tetap aman\r\n- Pastikan role hanya tampil dan tidak editable\r\n- Sinkronkan field profile dengan database terbaru\r\n\r\nFokus:\r\n- functionality\r\n- keamanan update profile\r\n- sinkronisasi database dan form\r\n- validasi input\r\n- consistency antara admin dan user\r\n\r\nInstruksi:\r\n- jangan ubah behavior lain\r\n- gunakan prepared statements jika project memakai itu\r\n- langsung berikan modifikasi kode yang diperlukan\r\n- jangan banyak penjelasan','http://localhost/Pasti_Info/admin/admin.php',NULL,NULL,'paid','approved','published',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-06-04 14:25:50'),(3,'7986686744','MCGG','comp_6a2129fe4e128.jpeg','Online','2026-05-15,2026-06-06','Umum',15000,'Esports','[📢 MCGG VOL.2 EXTENDED 📢]\r\n\r\nKesempatan masih terbuka! 🔥\r\nPendaftaran Magic Chess Go Go Tournament UNTIDAR 2026 resmi diperpanjang sampai 6 Juni 2026! ♟️🚀\r\n\r\nTurnamen ini terbuka untuk UMUM, jadi siapa pun bisa ikut bertanding dan menunjukkan strategi terbaiknya! Jangan sampai kelewatan karena slot terbatas 🤩\r\n\r\n🏆 Prize Pool: Rp420.000 + Sertifikat\r\n💰 HTM: 15K\r\n🌐 Mode: Online Tournament\r\n🎟️ OPEN 32 SLOT (No Multi Slot)\r\n\r\n🗓️ Timeline Terbaru:\r\n📌 Pendaftaran: 15 Mei – 6 Juni 2026\r\n📌 Technical Meeting: 6 Juni 2026\r\n📌 Pelaksanaan: 7 Juni 2026\r\n⏰ Waktu: 09.00 WIB – Selesai\r\n\r\n💸 Pembayaran:\r\nScan QR Code pada pamflet\r\n\r\n📞 Contact Person:\r\nTanti — 0882007955566\r\nAgnia — 082329451834\r\n\r\n📲 IG: @esports_untidar\r\n📧 [esportsuntidar@gmail.com]\r\n\r\n#MCGG\r\n#MagicChess\r\n#MagicChessGoGo\r\n#TournamentMagicChess\r\n#EsportsUntidar\r\n#MCGGVol2\r\n#TournamentOnline\r\n#MagicChessIndonesia\r\n#Infolomba\r\n#Untidar2026','https://forms.gle/R9TJLDgGMqZwjc7k8',NULL,NULL,'paid','approved','published',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2026-06-04 14:32:14');
-/*!40000 ALTER TABLE `competitions` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `competitions` (`id`, `uid`, `title`, `image`, `format`, `date_range`, `start_date`, `end_date`, `target_audience`, `registration_fee`, `description`, `registration_link`, `user_id`, `payment_status`, `approval_status`, `submission_status`, `xendit_invoice_id`, `xendit_invoice_url`, `paid_at`, `refunded_at`, `refund_status`, `reviewed_by`, `review_note`, `published_at`, `created_at`) VALUES
+(12, '3470406527', 'adnfajne', 'comp_6a2a117e2a5ab.jpeg', 'Online', '2026-06-12,2026-06-17', NULL, NULL, 'Umum', 70000, 'ada', 'http://localhost/Pasti_Info/pages/home.php', 2, 'paid', 'approved', 'published', '6a2a117e2035e67b782fdcd1', 'https://checkout-staging.xendit.co/web/6a2a117e2035e67b782fdcd1', '2026-06-11 08:47:08', NULL, 'none', 1, NULL, '2026-06-11 08:48:01', '2026-06-11 08:38:06'),
+(13, '1021806702', 'adfadf', 'comp_6a2a1410d187d.png', 'Online', '2026-06-24,2026-06-24', NULL, NULL, 'Umum', 0, 'adfaf', 'http://localhost/Pasti_Info/pages/profile.php', 2, 'paid', 'rejected', 'rejected', '6a2a14112035e67b782fe13f', 'https://checkout-staging.xendit.co/web/6a2a14112035e67b782fe13f', '2026-06-11 08:50:09', NULL, 'failed', 1, 'v  vh', NULL, '2026-06-11 08:49:04');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `competition_categories`
+--
+
+CREATE TABLE `competition_categories` (
+  `id` int(11) NOT NULL,
+  `competition_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `competition_categories`
+--
+
+INSERT INTO `competition_categories` (`id`, `competition_id`, `category_id`) VALUES
+(18, 12, 4),
+(19, 13, 4);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `saved_competitions`
 --
 
-DROP TABLE IF EXISTS `saved_competitions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `saved_competitions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `competition_id` int(11) NOT NULL,
-  `saved_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `competition_id` (`competition_id`),
-  CONSTRAINT `saved_competitions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `saved_competitions_ibfk_2` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `saved_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `saved_competitions`
---
-
-LOCK TABLES `saved_competitions` WRITE;
-/*!40000 ALTER TABLE `saved_competitions` DISABLE KEYS */;
-INSERT INTO `saved_competitions` VALUES (7,2,2,'2026-05-23 05:05:52');
-/*!40000 ALTER TABLE `saved_competitions` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `settings`
 --
 
-DROP TABLE IF EXISTS `settings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings` (
   `key` varchar(50) NOT NULL,
-  `value` varchar(255) NOT NULL,
-  PRIMARY KEY (`key`)
+  `value` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `settings`
 --
 
-LOCK TABLES `settings` WRITE;
-/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES ('submission_fee','20000');
-/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `settings` (`key`, `value`) VALUES
+('submission_fee', '20000');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `telegram_notification_logs`
 --
 
-DROP TABLE IF EXISTS `telegram_notification_logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `telegram_notification_logs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `chat_id` varchar(50) NOT NULL,
+  `id` int(11) NOT NULL,
+  `telegram_chat_id` varchar(50) DEFAULT NULL,
   `message` text NOT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `status` enum('sent','failed','pending') NOT NULL DEFAULT 'pending',
   `attempts` int(11) NOT NULL DEFAULT 0,
   `error_message` text DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `telegram_notification_logs`
 --
 
-LOCK TABLES `telegram_notification_logs` WRITE;
-/*!40000 ALTER TABLE `telegram_notification_logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `telegram_notification_logs` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `telegram_notification_logs` (`id`, `telegram_chat_id`, `message`, `status`, `attempts`, `error_message`, `created_at`, `updated_at`) VALUES
+(1, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>Gemastik XIX</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a11c3adcfc0f819cd7b30fb\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a11c3adcfc0f819cd7b30fb</code>', 'sent', 1, NULL, '2026-05-23 22:11:42', '2026-05-23 22:11:42'),
+(2, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>Gemastik XIX</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a11cc08d14bf94c48d2a0cc\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a11cc08d14bf94c48d2a0cc</code>', 'sent', 1, NULL, '2026-05-23 22:47:21', '2026-05-23 22:47:22'),
+(3, '6278216449', '✅ <b>PEMBAYARAN BERHASIL!</b>\n\nHalo! Pembayaran submission lomba Anda telah kami terima:\n\n🏆 <b>Lomba:</b> Gemastik XIX\n🧾 <b>Invoice ID:</b> <code>6a11cc08d14bf94c48d2a0cc</code>\n\nLomba Anda saat ini masuk antrean <b>Review Admin</b>. Kami akan memberi tahu Anda setelah review selesai.', 'sent', 1, NULL, '2026-05-23 22:47:39', '2026-05-23 22:47:40'),
+(4, '6278216449', '🎉 <b>CONGRATS! LOMBA DI-APPROVE!</b>\n\nHalo! Lomba yang Anda kirim telah disetujui oleh Admin dan resmi dipublish:\n\n🏆 <b>Lomba:</b> Gemastik XIX\n\nSekarang lomba Anda dapat dilihat oleh publik di platform LombaID. Terima kasih atas partisipasi Anda!', 'sent', 1, NULL, '2026-05-23 22:53:13', '2026-05-23 22:53:14'),
+(5, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>Gemastik XIX</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a11d25dcfc0f819cd7b4259\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a11d25dcfc0f819cd7b4259</code>', 'sent', 1, NULL, '2026-05-23 23:14:22', '2026-05-23 23:14:23'),
+(6, '6278216449', '✅ <b>PEMBAYARAN BERHASIL!</b>\n\nHalo! Pembayaran submission lomba Anda telah kami terima:\n\n🏆 <b>Lomba:</b> Gemastik XIX\n🧾 <b>Invoice ID:</b> <code>6a11d25dcfc0f819cd7b4259</code>\n\nLomba Anda saat ini masuk antrean <b>Review Admin</b>. Kami akan memberi tahu Anda setelah review selesai.', 'sent', 1, NULL, '2026-05-23 23:14:32', '2026-05-23 23:14:33'),
+(7, '6278216449', '⚠️ <b>LOMBA DITOLAK</b>\n\nHalo! Mohon maaf, lomba yang Anda kirim belum disetujui oleh Admin:\n\n🏆 <b>Lomba:</b> Gemastik XIX\n📝 <b>Alasan Penolakan:</b> jangan yang aneh aneh ya\n\nDana pembayaran Anda akan <b>direfund secara penuh</b> melalui Xendit. Proses refund sedang diajukan.', 'sent', 1, NULL, '2026-05-23 23:29:58', '2026-05-23 23:29:59'),
+(8, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>Fotografi National</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a11d96dcfc0f819cd7b4ace\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a11d96dcfc0f819cd7b4ace</code>', 'sent', 1, NULL, '2026-05-23 23:44:30', '2026-05-23 23:44:31'),
+(9, '6278216449', '✅ <b>PEMBAYARAN BERHASIL!</b>\n\nHalo! Pembayaran submission lomba Anda telah kami terima:\n\n🏆 <b>Lomba:</b> Fotografi National\n🧾 <b>Invoice ID:</b> <code>6a11d96dcfc0f819cd7b4ace</code>\n\nLomba Anda saat ini masuk antrean <b>Review Admin</b>. Kami akan memberi tahu Anda setelah review selesai.', 'sent', 1, NULL, '2026-05-23 23:44:43', '2026-05-23 23:44:43'),
+(10, '6278216449', '⚠️ <b>LOMBA DITOLAK</b>\n\nHalo! Mohon maaf, lomba yang Anda kirim belum disetujui oleh Admin:\n\n🏆 <b>Lomba:</b> Fotografi National\n📝 <b>Alasan Penolakan:</b> yee apaan ini\n\nDana pembayaran Anda akan <b>direfund secara penuh</b> melalui Xendit. Proses refund sedang diajukan.', 'sent', 1, NULL, '2026-05-23 23:45:10', '2026-05-23 23:45:11'),
+(11, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>adnfajne</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a2a117e2035e67b782fdcd1\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a2a117e2035e67b782fdcd1</code>', 'sent', 1, NULL, '2026-06-11 08:38:07', '2026-06-11 08:38:08'),
+(12, '6278216449', '✅ <b>PEMBAYARAN BERHASIL!</b>\n\nHalo! Pembayaran submission lomba Anda telah kami terima:\n\n🏆 <b>Lomba:</b> adnfajne\n🧾 <b>Invoice ID:</b> <code>6a2a117e2035e67b782fdcd1</code>\n\nLomba Anda saat ini masuk antrean <b>Review Admin</b>. Kami akan memberi tahu Anda setelah review selesai.', 'sent', 1, NULL, '2026-06-11 08:47:08', '2026-06-11 08:47:09'),
+(13, '6278216449', '🎉 <b>CONGRATS! LOMBA DI-APPROVE!</b>\n\nHalo! Lomba yang Anda kirim telah disetujui oleh Admin dan resmi dipublish:\n\n🏆 <b>Lomba:</b> adnfajne\n\nSekarang lomba Anda dapat dilihat oleh publik di platform LombaID. Terima kasih atas partisipasi Anda!', 'sent', 1, NULL, '2026-06-11 08:48:01', '2026-06-11 08:48:02'),
+(14, '6278216449', '🛒 <b>INVOICE SUBMISSION BERHASIL DIBUAT!</b>\n\nHalo! Lomba baru Anda <b>adfadf</b> berhasil disubmit.\n\nSilakan lakukan pembayaran sebesar <b>Rp 20.000</b> dalam waktu 24 jam untuk melanjutkannya ke proses review admin:\n\n🔗 <b>Link Pembayaran:</b> <a href=\"https://checkout-staging.xendit.co/web/6a2a14112035e67b782fe13f\">Bayar Sekarang</a>\n🧾 <b>Invoice ID:</b> <code>6a2a14112035e67b782fe13f</code>', 'sent', 1, NULL, '2026-06-11 08:49:06', '2026-06-11 08:49:07'),
+(15, '6278216449', '✅ <b>PEMBAYARAN BERHASIL!</b>\n\nHalo! Pembayaran submission lomba Anda telah kami terima:\n\n🏆 <b>Lomba:</b> adfadf\n🧾 <b>Invoice ID:</b> <code>6a2a14112035e67b782fe13f</code>\n\nLomba Anda saat ini masuk antrean <b>Review Admin</b>. Kami akan memberi tahu Anda setelah review selesai.', 'sent', 1, NULL, '2026-06-11 08:50:09', '2026-06-11 08:50:10'),
+(16, '6278216449', '⚠️ <b>LOMBA DITOLAK</b>\n\nHalo! Mohon maaf, lomba yang Anda kirim belum disetujui oleh Admin:\n\n🏆 <b>Lomba:</b> adfadf\n📝 <b>Alasan Penolakan:</b> v  vh\n\nDana pembayaran Anda akan <b>direfund secara penuh</b> melalui Xendit. Proses refund sedang diajukan.', 'sent', 1, NULL, '2026-06-11 08:50:28', '2026-06-11 08:50:29');
 
---
--- Table structure for table `user_category_subscriptions`
---
-
-DROP TABLE IF EXISTS `user_category_subscriptions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user_category_subscriptions` (
-  `user_id` int(11) NOT NULL COMMENT 'ID User (referensi ke kolom id pada tabel users)',
-  `category_id` int(11) NOT NULL COMMENT 'ID Kategori (referensi ke kolom id pada tabel categories)',
-  `subscribed_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Waktu / Tanggal user mulai melakukan subscription pada kategori',
-  PRIMARY KEY (`user_id`,`category_id`),
-  KEY `fk_ucs_category` (`category_id`),
-  CONSTRAINT `fk_ucs_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_ucs_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_category_subscriptions`
---
-
-LOCK TABLES `user_category_subscriptions` WRITE;
-/*!40000 ALTER TABLE `user_category_subscriptions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_category_subscriptions` ENABLE KEYS */;
-UNLOCK TABLES;
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `profile_picture` varchar(255) DEFAULT 'default_user.png',
-  `role` enum('admin','user') DEFAULT 'user',
+  `profile_picture` varchar(255) NOT NULL DEFAULT 'default-avatar.jpg',
+  `role` varchar(20) NOT NULL DEFAULT 'user',
   `telegram_chat_id` varchar(50) DEFAULT NULL,
-  `institution` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `institution` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','admin@gmail.com','admin','default_user.png','admin','1123456',''),(2,'budbud','budi@gmail.com','budi','default_user.png','user','122234',''),(3,'Muhammad Dafa Falah Labib','dafafalah1616@gmail.com',NULL,'default_user.png','user',NULL,NULL);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `profile_picture`, `role`, `telegram_chat_id`, `institution`) VALUES
+(1, 'admin', 'admin@gmail.com', '$2y$10$12zO0ZvvFfoVmIY5GzgPq.4HCvDmWYvqDYE.w71SOG9ZfXqVLPd3a', 'user_6a117179967cb.jpg', 'admin', '1123456', ''),
+(2, 'budbud', 'budi@gmail.com', '$2y$10$lHnofQwoi8ohzqYp5/bUJOWU0JP.88RbwoJTgt0XjpiaPUeq58OPK', 'default_user.png', 'user', '6278216449', ''),
+(3, 'Muhammad Dafa Falah Labib', 'dafafalah1616@gmail.com', NULL, 'default_user.png', 'user', NULL, NULL);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+-- --------------------------------------------------------
 
--- Dump completed on 2026-06-04 14:36:13
+--
+-- Table structure for table `user_category_subscriptions`
+--
+
+CREATE TABLE `user_category_subscriptions` (
+  `user_id` int(11) NOT NULL COMMENT 'ID User (referensi ke kolom id pada tabel users)',
+  `category_id` int(11) NOT NULL COMMENT 'ID Kategori (referensi ke kolom id pada tabel categories)',
+  `subscribed_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Waktu / Tanggal user mulai melakukan subscription pada kategori'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_category_subscriptions`
+--
+
+INSERT INTO `user_category_subscriptions` (`user_id`, `category_id`, `subscribed_at`) VALUES
+(1, 2, '2026-05-23 07:46:34'),
+(2, 3, '2026-05-23 08:32:42');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `activity_logs`
+--
+ALTER TABLE `activity_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_activity_logs_user_id` (`user_id`),
+  ADD KEY `idx_activity_logs_action` (`action`),
+  ADD KEY `idx_activity_logs_created_at` (`created_at`);
+
+--
+-- Indexes for table `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `competitions`
+--
+ALTER TABLE `competitions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uid` (`uid`),
+  ADD KEY `idx_competitions_user_id` (`user_id`),
+  ADD KEY `idx_competitions_reviewed_by` (`reviewed_by`),
+  ADD KEY `idx_competitions_submission_status` (`submission_status`),
+  ADD KEY `idx_competitions_xendit_invoice_id` (`xendit_invoice_id`),
+  ADD KEY `idx_competitions_title` (`title`);
+
+--
+-- Indexes for table `competition_categories`
+--
+ALTER TABLE `competition_categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_comp_cat` (`competition_id`,`category_id`),
+  ADD KEY `competition_id` (`competition_id`),
+  ADD KEY `category_id` (`category_id`);
+
+--
+-- Indexes for table `saved_competitions`
+--
+ALTER TABLE `saved_competitions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_saved_comp` (`user_id`,`competition_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `competition_id` (`competition_id`);
+
+--
+-- Indexes for table `settings`
+--
+ALTER TABLE `settings`
+  ADD PRIMARY KEY (`key`);
+
+--
+-- Indexes for table `telegram_notification_logs`
+--
+ALTER TABLE `telegram_notification_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_tnl_status` (`status`),
+  ADD KEY `idx_tnl_chat_id` (`telegram_chat_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `uq_users_telegram_chat_id` (`telegram_chat_id`),
+  ADD KEY `idx_users_telegram_chat_id` (`telegram_chat_id`);
+
+--
+-- Indexes for table `user_category_subscriptions`
+--
+ALTER TABLE `user_category_subscriptions`
+  ADD PRIMARY KEY (`user_id`,`category_id`),
+  ADD KEY `fk_ucs_category` (`category_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `activity_logs`
+--
+ALTER TABLE `activity_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `competitions`
+--
+ALTER TABLE `competitions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `competition_categories`
+--
+ALTER TABLE `competition_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `saved_competitions`
+--
+ALTER TABLE `saved_competitions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `telegram_notification_logs`
+--
+ALTER TABLE `telegram_notification_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `activity_logs`
+--
+ALTER TABLE `activity_logs`
+  ADD CONSTRAINT `fk_activity_logs_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `competitions`
+--
+ALTER TABLE `competitions`
+  ADD CONSTRAINT `fk_competitions_reviewed_by` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_competitions_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `competition_categories`
+--
+ALTER TABLE `competition_categories`
+  ADD CONSTRAINT `fk_comp_cat_category_id` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_comp_cat_competition_id` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `saved_competitions`
+--
+ALTER TABLE `saved_competitions`
+  ADD CONSTRAINT `fk_saved_comp_competition_id` FOREIGN KEY (`competition_id`) REFERENCES `competitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_saved_comp_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_category_subscriptions`
+--
+ALTER TABLE `user_category_subscriptions`
+  ADD CONSTRAINT `fk_ucs_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ucs_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
