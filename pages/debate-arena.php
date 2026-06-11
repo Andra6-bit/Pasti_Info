@@ -183,6 +183,7 @@ if ($comp_res) {
     <!-- Inject data dari server PHP ke Javascript -->
     <script>
         window.currentUserProfilePicture = "<?= htmlspecialchars($user_pic) ?>";
+        window.currentUsername = "<?= htmlspecialchars($_SESSION['username'] ?? $_SESSION['user_username'] ?? 'User') ?>";
         window.dbCompetitions = <?= json_encode($competitions) ?>;
     </script>
 

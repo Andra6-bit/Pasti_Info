@@ -92,9 +92,11 @@ if ($user_id > 0) {
         <div class="sidebar">
             <div class="profile-card">
                 <div class="profile-avatar">
-                    <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" 
-                        onerror="this.onerror=null; this.src='../assets/images/default_user.png';" 
-                        alt="Profile Photo">
+                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+                        <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile Photo">
+                    <?php else: ?>
+                        <?= htmlspecialchars($initial) ?>
+                    <?php endif; ?>
                 </div>
                 <div class="profile-name"><?= htmlspecialchars($username) ?></div>
                 <div class="profile-email"><?= htmlspecialchars($email) ?></div>

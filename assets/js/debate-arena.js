@@ -340,15 +340,22 @@ document.addEventListener("DOMContentLoaded", () => {
         group.className = `msg-group ${isUser ? 'user' : ''}`;
 
         // Get avatar
-        let avatarSrc = getAvatarSrc(sender);
-        if (isUser && window.currentUserProfilePicture && !window.currentUserProfilePicture.includes("default_user.png")) {
-            // Ambil profile picture user jika didefinisikan dari server PHP dan bukan default_user.png
-            avatarSrc = window.currentUserProfilePicture;
+        let avatarHTML = '';
+        if (isUser) {
+            if (window.currentUserProfilePicture && !window.currentUserProfilePicture.includes("default_user.png")) {
+                avatarHTML = `<img src="${window.currentUserProfilePicture}" alt="${senderLabel}">`;
+            } else {
+                const initial = (window.currentUsername || 'U').charAt(0).toUpperCase();
+                avatarHTML = `<span>${initial}</span>`;
+            }
+        } else {
+            const avatarSrc = getAvatarSrc(sender);
+            avatarHTML = `<img src="${avatarSrc}" alt="${senderLabel}">`;
         }
 
         group.innerHTML = `
             <div class="msg-avatar ${sender.toLowerCase()}">
-                <img src="${avatarSrc}" alt="${senderLabel}">
+                ${avatarHTML}
             </div>
             <div class="msg-body">
                 <div class="msg-sender">${senderLabel}</div>
