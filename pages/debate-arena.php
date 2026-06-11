@@ -5,7 +5,7 @@ include "../config/database.php";
 
 // Pengguna harus login
 if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || !isset($_SESSION['user_id'])) {
-    header("Location: auth.php?error=" . urlencode("Silakan login terlebih dahulu untuk mengakses Chat AI."));
+    header("Location: auth.php?error=" . urlencode("Silakan login terlebih dahulu untuk mengakses Debate AI."));
     exit();
 }
 
@@ -59,7 +59,7 @@ if ($comp_res) {
     <!-- Material Symbols for Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 </head>
-<body class="chat-ai-page">
+<body class="debate-arena-page">
 
     <!-- Header Navbar -->
     <?php include '../components/navbar.php'; ?>

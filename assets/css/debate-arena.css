@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 /* Prevent body scrolling on chat-ai page to fit the chat client exactly in viewport */
-body.chat-ai-page {
+body.debate-arena-page {
   overflow: hidden !important;
   height: 100vh !important;
   padding-bottom: 0 !important;

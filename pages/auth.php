@@ -216,10 +216,10 @@ window.onload = function() {
         alertBox.classList.remove('hidden');
         
         if (success === '1') {
-            alertBox.innerText = "Registration successful! Please login.";
+            alertBox.innerText = "✅ Registration successful! Please login.";
             alertBox.className = "alert-container alert-success";
         } else if (error) {
-            alertBox.innerText = decodeURIComponent(error);
+            alertBox.innerText = "⚠️ " + decodeURIComponent(error);
             alertBox.className = "alert-container alert-error";
         }
 

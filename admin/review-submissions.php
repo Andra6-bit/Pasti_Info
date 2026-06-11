@@ -7,7 +7,6 @@
  */
 
 if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION['user_role'] ?? '') !== 'admin') {
-    // 1-line reason: Replace username-based admin check with session role verification for improved security.
     exit('Access denied.');
 }
 
@@ -290,7 +289,7 @@ function viewSubmissionDetails(data) {
     document.getElementById('det-dates').textContent = dates;
     
     document.getElementById('det-fee').textContent = data.registration_fee == 0 ? 'Free' : 'Rp ' + parseInt(data.registration_fee).toLocaleString('id-ID');
-    document.getElementById('det-category').textContent = data.category;
+    document.getElementById('det-category').textContent = data.category || 'Tidak dikategorikan';
     document.getElementById('det-link').href = data.registration_link;
     document.getElementById('det-desc').textContent = data.description;
     

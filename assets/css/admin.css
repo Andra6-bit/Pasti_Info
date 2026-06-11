@@ -231,3 +231,14 @@
   .drop-preview-img { height: 70px; }
   .modal-header { gap: 10px; }
 }
+
+.alert-warning {
+  background: #fffbeb !important;
+  border: 1px solid #fcd34d !important;
+  color: #92400e !important;
+}
+.alert-info {
+  background: #eff6ff !important;
+  border: 1px solid #93c5fd !important;
+  color: #1e40af !important;
+}

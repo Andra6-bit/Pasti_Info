@@ -11,7 +11,7 @@ $user_id = (int)$_SESSION['user_id'];
 
 $stmt = mysqli_prepare($koneksi, "SELECT role, profile_picture FROM users WHERE id = ?");
 if (!$stmt) {
-    header("Location: ../pages/home.php?error=" . urlencode("Database error occurred."));
+    header("Location: ../pages/profile.php?tab=profile-info&error=" . urlencode("Database error occurred."));
     exit();
 }
 mysqli_stmt_bind_param($stmt, "i", $user_id);

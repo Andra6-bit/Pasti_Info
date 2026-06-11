@@ -85,6 +85,87 @@ foreach ($submissions as $index => $row) {
 }
 $subs_count = count($submissions);
 ?>
+<style>
+.subs-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    border: 1px solid transparent;
+}
+.subs-pill i {
+    font-size: 13px;
+}
+.subs-pill-paid {
+    background: #eff6ff;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+.subs-pill-unpaid {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+}
+.subs-pill-refunded {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+.subs-pill-failed {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}
+.subs-pill-published, .subs-pill-approved {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+.subs-pill-awaiting-payment {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #ffedd5;
+}
+.subs-pill-under-review {
+    background: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ddd6fe;
+}
+.subs-btn-pay {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #185fa5;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.subs-btn-pay:hover {
+    background: #0f4a81;
+    color: #ffffff;
+}
+.subs-btn-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #185fa5;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.subs-btn-view:hover {
+    text-decoration: underline;
+}
+</style>
 
 <div class="tab-panel <?= $active_tab === 'my-submissions' ? 'active' : '' ?>" id="tab-my-submissions">
     
@@ -294,7 +375,7 @@ function viewUserSubmissionDetails(data) {
     document.getElementById('user-det-dates').textContent = dates;
     
     document.getElementById('user-det-fee').textContent = data.registration_fee == 0 ? 'Free' : 'Rp ' + parseInt(data.registration_fee).toLocaleString('id-ID');
-    document.getElementById('user-det-category').textContent = data.category;
+    document.getElementById('user-det-category').textContent = data.category || 'Tidak dikategorikan';
     document.getElementById('user-det-link').href = data.registration_link;
     document.getElementById('user-det-desc').textContent = data.description;
     

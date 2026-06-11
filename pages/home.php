@@ -118,6 +118,9 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === 'login' && isset($_SES
 </header>
 
 <section class="section">
+    <!-- Alert Box Container -->
+    <div id="homeAlert" class="alert hidden" style="margin: 0 0 20px 0;"></div>
+    
     <div class="card-grid" id="cardGrid">
         <?php
         $count = 0;
@@ -152,5 +155,35 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === 'login' && isset($_SES
     }, 60000); // 60 seconds
 </script>
 <?php endif; ?>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorMsg = urlParams.get('error');
+        const successMsg = urlParams.get('success');
+        const alertBox = document.getElementById('homeAlert');
+        
+        if (errorMsg) {
+            alertBox.innerText = "⚠️ " + decodeURIComponent(errorMsg);
+            alertBox.classList.remove('hidden');
+            alertBox.classList.add('alert-error');
+            setTimeout(() => alertBox.classList.add('hidden'), 5000);
+            
+            // Clean URL query parameters
+            urlParams.delete('error');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+        } else if (successMsg) {
+            alertBox.innerText = "✅ " + decodeURIComponent(successMsg);
+            alertBox.classList.remove('hidden');
+            alertBox.classList.add('alert-success');
+            setTimeout(() => alertBox.classList.add('hidden'), 5000);
+            
+            // Clean URL query parameters
+            urlParams.delete('success');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, '', newUrl);
+        }
+    });
+</script>
 </body>
 </html>
