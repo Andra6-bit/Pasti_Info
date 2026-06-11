@@ -50,8 +50,8 @@ $search_action = (strpos($fs_current_dir, '/admin') !== false) ? '../pages/home.
                 : ((strpos($fs_current_dir, '/admin') !== false) ? '../pages/profile.php' : 'profile.php');
             $fs_initial = strtoupper(substr($fs_user, 0, 1));
         ?>
-        <a href="<?= $fs_profile_link ?>" class="floating-profile-btn" title="Open Profile of <?= htmlspecialchars($fs_user) ?>" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png') ? 'padding:0; overflow:hidden;' : '' ?>">
-            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+        <a href="<?= $fs_profile_link ?>" class="floating-profile-btn" title="Open Profile of <?= htmlspecialchars($fs_user) ?>" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg') ? 'padding:0; overflow:hidden;' : '' ?>">
+            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg'): ?>
                 <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
             <?php else: ?>
                 <?= htmlspecialchars($fs_initial) ?>

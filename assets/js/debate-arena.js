@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Get avatar
         let avatarHTML = '';
         if (isUser) {
-            if (window.currentUserProfilePicture && !window.currentUserProfilePicture.includes("default_user.png")) {
+            if (window.currentUserProfilePicture && !window.currentUserProfilePicture.includes("default_user.png") && !window.currentUserProfilePicture.includes("default-avatar.jpg")) {
                 avatarHTML = `<img src="${window.currentUserProfilePicture}" alt="${senderLabel}">`;
             } else {
                 const initial = (window.currentUsername || 'U').charAt(0).toUpperCase();

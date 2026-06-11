@@ -115,7 +115,7 @@ if (!in_array($active_tab, ['profile-info', 'saved-competitions', 'settings', 'm
         <div class="sidebar">
             <div class="profile-card">
                 <div class="profile-avatar">
-                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg'): ?>
                         <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile Photo">
                     <?php else: ?>
                         <?= htmlspecialchars($initial) ?>

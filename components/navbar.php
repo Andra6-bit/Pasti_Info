@@ -70,8 +70,8 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
                     <a href="javascript:void(0)" onclick="openSubmitCompetitionModal()" class="nav-beranda">Submit Lomba</a>
                 <?php endif; ?>
 
-                <a href="<?= $profile_link ?>" class="nav-avatar-button" title="Hello, <?= htmlspecialchars($session_user) ?>" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png') ? 'padding:0; overflow:hidden;' : 'display:flex; align-items:center; justify-content:center;' ?>">
-                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+                <a href="<?= $profile_link ?>" class="nav-avatar-button" title="Hello, <?= htmlspecialchars($session_user) ?>" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg') ? 'padding:0; overflow:hidden;' : 'display:flex; align-items:center; justify-content:center;' ?>">
+                    <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg'): ?>
                         <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Avatar" class="nav-avatar-img" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
                     <?php else: ?>
                         <?= htmlspecialchars($initial) ?>
@@ -117,8 +117,8 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
     <?php endif; ?>
     
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
-        <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profile" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png') ? 'padding:0; overflow:hidden;' : 'font-weight:700; font-size:16px; text-transform:uppercase;' ?>">
-            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png'): ?>
+        <a href="<?= $profile_link ?>" class="mobile-nav-item" title="Profile" style="<?= (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg') ? 'padding:0; overflow:hidden;' : 'font-weight:700; font-size:16px; text-transform:uppercase;' ?>">
+            <?php if (!empty($profile_picture) && $profile_picture !== 'default_user.png' && $profile_picture !== 'default-avatar.jpg'): ?>
                 <img src="../assets/images/<?= htmlspecialchars($profile_picture) ?>" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
             <?php else: ?>
                 <?= htmlspecialchars($initial) ?>
