@@ -11,9 +11,67 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION
     exit('Access denied.');
 }
 
-// Fetch competitions in 'pending_review' state
+// Active synchronization with Xendit for recent unpaid submissions to handle hosting webhook blocks
+require_once __DIR__ . '/../helpers/xendit.php';
+require_once __DIR__ . '/../helpers/telegram-notification.php';
+
+$sync_query = "
+    SELECT * FROM competitions 
+    WHERE payment_status = 'unpaid' 
+      AND xendit_invoice_id IS NOT NULL 
+      AND xendit_invoice_id <> '' 
+      AND created_at >= NOW() - INTERVAL 2 DAY
+";
+$sync_res = mysqli_query($koneksi, $sync_query);
+if ($sync_res) {
+    while ($sync_row = mysqli_fetch_assoc($sync_res)) {
+        $invoice = getXenditInvoice($sync_row['xendit_invoice_id']);
+        if ($invoice && isset($invoice['status'])) {
+            $inv_status = strtoupper($invoice['status']);
+            if ($inv_status === 'PAID' || $inv_status === 'SETTLED') {
+                // Update DB status to Paid and Pending Review
+                $up_sql = "UPDATE competitions SET payment_status = 'paid', submission_status = 'pending_review', paid_at = NOW() WHERE id = ?";
+                $up_stmt = mysqli_prepare($koneksi, $up_sql);
+                if ($up_stmt) {
+                    mysqli_stmt_bind_param($up_stmt, "i", $sync_row['id']);
+                    mysqli_stmt_execute($up_stmt);
+                    mysqli_stmt_close($up_stmt);
+                }
+
+                // Send Telegram Notification to Submitter
+                $chat_id = '';
+                $u_stmt = mysqli_prepare($koneksi, "SELECT telegram_chat_id FROM users WHERE id = ? LIMIT 1");
+                if ($u_stmt) {
+                    mysqli_stmt_bind_param($u_stmt, "i", $sync_row['user_id']);
+                    mysqli_stmt_execute($u_stmt);
+                    $u_res = mysqli_stmt_get_result($u_stmt);
+                    if ($u_row = mysqli_fetch_assoc($u_res)) {
+                        $chat_id = $u_row['telegram_chat_id'];
+                    }
+                    mysqli_stmt_close($u_stmt);
+                }
+                notifyPaymentSuccess($chat_id, $sync_row['title'], $sync_row['xendit_invoice_id']);
+            } elseif ($inv_status === 'EXPIRED') {
+                // Update DB status to Expired
+                $up_sql = "UPDATE competitions SET payment_status = 'expired', submission_status = 'expired' WHERE id = ?";
+                $up_stmt = mysqli_prepare($koneksi, $up_sql);
+                if ($up_stmt) {
+                    mysqli_stmt_bind_param($up_stmt, "i", $sync_row['id']);
+                    mysqli_stmt_execute($up_stmt);
+                    mysqli_stmt_close($up_stmt);
+                }
+            }
+        }
+    }
+}
+
+// Fetch competitions in 'pending_review' state (including categories joined from normalized tables)
 $review_query = "
-    SELECT c.*, u.username as submitter_name, u.email as submitter_email 
+    SELECT c.*, u.username as submitter_name, u.email as submitter_email,
+           (SELECT GROUP_CONCAT(cat.name SEPARATOR ', ') 
+            FROM competition_categories cc 
+            JOIN categories cat ON cc.category_id = cat.id 
+            WHERE cc.competition_id = c.id) as category
     FROM competitions c 
     LEFT JOIN users u ON c.user_id = u.id 
     WHERE c.submission_status = 'pending_review' 
