@@ -1,5 +1,5 @@
 /**
- * assets/js/chat-ai.js
+ * assets/js/debate-arena.js
  *
  * Mengelola state chat (LocalStorage), interaksi UI (WhatsApp-like bubble chat, modal picker),
  * animasi mengetik (typing simulator), request ke backend, dan rendering report card final.

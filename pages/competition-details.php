@@ -183,7 +183,7 @@ $imagePath = '../assets/images/' . ($lomba['image'] ? safeText($lomba['image']) 
                 <?php endif; ?>
 
                 <!-- 1-line reason: Rename the button to Debate AI and replace the robot icon with debate swords. -->
-                <a href="chat-ai.php?competition_id=<?php echo urlencode($lomba['id']); ?>" class="btn-chat-ai">
+                <a href="debate-arena.php?competition_id=<?php echo urlencode($lomba['id']); ?>" class="btn-chat-ai">
                     <i class="ti ti-swords" style="font-size:18px;vertical-align:middle;margin-right:6px;"></i> Debate AI
                 </a>
                 

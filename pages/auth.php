@@ -2,7 +2,7 @@
 include "../config/database.php";
 
 $posters = [];
-$result  = mysqli_query($koneksi, "SELECT image FROM competitions WHERE image IS NOT NULL AND image != ''");
+$result  = mysqli_query($koneksi, "SELECT image FROM competitions WHERE image IS NOT NULL AND image != '' AND payment_status = 'paid' AND approval_status = 'approved' AND submission_status = 'published'");
 while ($row = mysqli_fetch_assoc($result)) {
     $posters[] = $row['image'];
 }
@@ -118,31 +118,43 @@ if ($has_posters) {
 
         <div class="glow-line"></div> <!-- "or" divider style -->
 
-        <div class="google-btn-container" style="display: flex; justify-content: center;">
-            <div id="g_id_onload"
-                 data-client_id="171421878386-imt8jhr76mglv6dkb9ibrijst01dndn1.apps.googleusercontent.com" 
-                 data-context="signin"
-                 data-ux_mode="popup"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-shape="pill" 
-                 data-theme="outline"
-                 data-text="signin_with"
-                 data-size="large"
-                 data-logo_alignment="left"
-                 data-width="348">
-            </div>
+        <div class="google-btn-container" style="display: flex; justify-content: center; width: 100%;">
+            <div id="google-signin-btn"></div>
         </div>
 
     </div>
 </section>
 
 <!-- SDK Google & Script Handler -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
 <script>
+function initGoogleSignIn() {
+    google.accounts.id.initialize({
+        client_id: "171421878386-imt8jhr76mglv6dkb9ibrijst01dndn1.apps.googleusercontent.com",
+        callback: handleCredentialResponse,
+        context: "signin",
+        ux_mode: "popup",
+        auto_prompt: false
+    });
+    
+    // Calculate optimal width based on container width
+    const container = document.querySelector('.google-btn-container');
+    const width = container ? Math.max(200, Math.min(container.clientWidth, 400)) : 300;
+    
+    google.accounts.id.renderButton(
+        document.getElementById("google-signin-btn"),
+        { 
+            type: "standard",
+            shape: "pill",
+            theme: "outline",
+            text: "signin_with",
+            size: "large",
+            logo_alignment: "left",
+            width: width
+        }
+    );
+}
+
 function handleCredentialResponse(response) {
     const form = document.createElement('form');
     form.method = 'POST';

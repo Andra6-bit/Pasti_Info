@@ -15,7 +15,7 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'login' || ($_SESSION
 $review_query = "
     SELECT c.*, u.username as submitter_name, u.email as submitter_email 
     FROM competitions c 
-    JOIN users u ON c.user_id = u.id 
+    LEFT JOIN users u ON c.user_id = u.id 
     WHERE c.submission_status = 'pending_review' 
     ORDER BY c.id ASC
 ";

@@ -55,7 +55,7 @@ error_log("[Xendit Webhook Info] Received callback. invoice_id={$invoice_id} | s
 // 1-line reason: Retrieve submitter Telegram chat ID from users table using a JOIN to replace redundant telegram_chat_id column.
 $compQuery = "SELECT c.id, c.title, u.telegram_chat_id, c.payment_status, c.submission_status 
               FROM competitions c 
-              JOIN users u ON c.user_id = u.id 
+              LEFT JOIN users u ON c.user_id = u.id 
               WHERE c.xendit_invoice_id = ? LIMIT 1";
 $compStmt  = mysqli_prepare($koneksi, $compQuery);
 

@@ -19,11 +19,11 @@ require_once $root . '/config/database.php';  // provides $koneksi
  * @param string $message
  * @return int|false The log ID or false on failure.
  */
-function queueTelegramNotification(string $chat_id, string $message)
+function queueTelegramNotification(?string $chat_id, string $message)
 {
     global $koneksi;
 
-    $chat_id = trim($chat_id);
+    $chat_id = trim($chat_id ?? '');
     if (empty($chat_id) || !ctype_digit($chat_id)) {
         error_log("[Telegram Notification Error] Invalid Telegram Chat ID: '{$chat_id}'");
         return false;
@@ -119,7 +119,7 @@ function sendQueuedTelegramNotification(int $log_id): bool
  * @param string $message
  * @return bool
  */
-function notifyUserTelegram(string $chat_id, string $message): bool
+function notifyUserTelegram(?string $chat_id, string $message): bool
 {
     $log_id = queueTelegramNotification($chat_id, $message);
     if ($log_id) {
@@ -162,7 +162,7 @@ function retryFailedTelegramNotifications(int $max_attempts = 3): int
 
 // ─── EVENT SPECIFIC FORMATTERS ───────────────────────────────────────────────
 
-function notifyPaymentSuccess(string $chat_id, string $title, string $invoice_id)
+function notifyPaymentSuccess(?string $chat_id, string $title, string $invoice_id)
 {
     $msg = "✅ <b>PEMBAYARAN BERHASIL!</b>\n\n"
          . "Halo! Pembayaran submission lomba Anda telah kami terima:\n\n"
@@ -172,7 +172,7 @@ function notifyPaymentSuccess(string $chat_id, string $title, string $invoice_id
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyPaymentFailed(string $chat_id, string $title, string $invoice_id)
+function notifyPaymentFailed(?string $chat_id, string $title, string $invoice_id)
 {
     $msg = "❌ <b>PEMBAYARAN GAGAL</b>\n\n"
          . "Halo! Kami mendeteksi bahwa pembayaran submission lomba Anda gagal:\n\n"
@@ -182,7 +182,7 @@ function notifyPaymentFailed(string $chat_id, string $title, string $invoice_id)
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyPaymentExpired(string $chat_id, string $title, string $invoice_id)
+function notifyPaymentExpired(?string $chat_id, string $title, string $invoice_id)
 {
     $msg = "⏳ <b>PEMBAYARAN EXPIRED</b>\n\n"
          . "Halo! Masa pembayaran submission lomba Anda telah berakhir (melebihi 24 jam):\n\n"
@@ -192,7 +192,7 @@ function notifyPaymentExpired(string $chat_id, string $title, string $invoice_id
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyUnderReview(string $chat_id, string $title)
+function notifyUnderReview(?string $chat_id, string $title)
 {
     $msg = "🔍 <b>LOMBA SEDANG DIREVIEW</b>\n\n"
          . "Halo! Kompetisi Anda sedang diperiksa oleh Admin:\n\n"
@@ -201,7 +201,7 @@ function notifyUnderReview(string $chat_id, string $title)
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyApproved(string $chat_id, string $title)
+function notifyApproved(?string $chat_id, string $title)
 {
     $msg = "🎉 <b>CONGRATS! LOMBA DI-APPROVE!</b>\n\n"
          . "Halo! Lomba yang Anda kirim telah disetujui oleh Admin dan resmi dipublish:\n\n"
@@ -210,7 +210,7 @@ function notifyApproved(string $chat_id, string $title)
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyRejected(string $chat_id, string $title, string $note)
+function notifyRejected(?string $chat_id, string $title, string $note)
 {
     $msg = "⚠️ <b>LOMBA DITOLAK</b>\n\n"
          . "Halo! Mohon maaf, lomba yang Anda kirim belum disetujui oleh Admin:\n\n"
@@ -220,7 +220,7 @@ function notifyRejected(string $chat_id, string $title, string $note)
     notifyUserTelegram($chat_id, $msg);
 }
 
-function notifyRefundSuccess(string $chat_id, string $title, int $amount)
+function notifyRefundSuccess(?string $chat_id, string $title, int $amount)
 {
     $msg = "💸 <b>REFUND BERHASIL DIPROSES!</b>\n\n"
          . "Halo! Refund pembayaran submission Anda telah sukses diajukan ke Xendit:\n\n"

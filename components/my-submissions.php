@@ -25,6 +25,64 @@ if ($subs_stmt) {
     }
     mysqli_stmt_close($subs_stmt);
 }
+
+// Active synchronization with Xendit for unpaid submissions
+require_once __DIR__ . '/../helpers/xendit.php';
+require_once __DIR__ . '/../helpers/telegram-notification.php';
+
+foreach ($submissions as $index => $row) {
+    $pay_status = strtolower($row['payment_status'] ?? 'unpaid');
+    if ($pay_status === 'unpaid' && !empty($row['xendit_invoice_id'])) {
+        $invoice = getXenditInvoice($row['xendit_invoice_id']);
+        if ($invoice && isset($invoice['status'])) {
+            $inv_status = strtoupper($invoice['status']);
+            if ($inv_status === 'PAID' || $inv_status === 'SETTLED') {
+                // Update DB status to Paid and Pending Review
+                $up_sql = "UPDATE competitions SET payment_status = 'paid', submission_status = 'pending_review', paid_at = NOW() WHERE id = ?";
+                $up_stmt = mysqli_prepare($koneksi, $up_sql);
+                if ($up_stmt) {
+                    mysqli_stmt_bind_param($up_stmt, "i", $row['id']);
+                    mysqli_stmt_execute($up_stmt);
+                    mysqli_stmt_close($up_stmt);
+                }
+                
+                // Update local array variable
+                $submissions[$index]['payment_status'] = 'paid';
+                $submissions[$index]['submission_status'] = 'pending_review';
+                $submissions[$index]['paid_at'] = date('Y-m-d H:i:s');
+                
+                // Send Telegram Notification
+                $chat_id = $row['telegram_chat_id'] ?? '';
+                if (empty($chat_id)) {
+                    $u_stmt = mysqli_prepare($koneksi, "SELECT telegram_chat_id FROM users WHERE id = ? LIMIT 1");
+                    if ($u_stmt) {
+                        mysqli_stmt_bind_param($u_stmt, "i", $user_id);
+                        mysqli_stmt_execute($u_stmt);
+                        $u_res = mysqli_stmt_get_result($u_stmt);
+                        if ($u_row = mysqli_fetch_assoc($u_res)) {
+                            $chat_id = $u_row['telegram_chat_id'];
+                        }
+                        mysqli_stmt_close($u_stmt);
+                    }
+                }
+                notifyPaymentSuccess($chat_id, $row['title'], $row['xendit_invoice_id']);
+            } elseif ($inv_status === 'EXPIRED') {
+                // Update DB status to Expired
+                $up_sql = "UPDATE competitions SET payment_status = 'expired', submission_status = 'expired' WHERE id = ?";
+                $up_stmt = mysqli_prepare($koneksi, $up_sql);
+                if ($up_stmt) {
+                    mysqli_stmt_bind_param($up_stmt, "i", $row['id']);
+                    mysqli_stmt_execute($up_stmt);
+                    mysqli_stmt_close($up_stmt);
+                }
+                
+                // Update local array variable
+                $submissions[$index]['payment_status'] = 'expired';
+                $submissions[$index]['submission_status'] = 'expired';
+            }
+        }
+    }
+}
 $subs_count = count($submissions);
 ?>
 

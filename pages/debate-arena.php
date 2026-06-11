@@ -1,5 +1,5 @@
 <?php
-// pages/chat-ai.php
+// pages/debate-arena.php
 include "./session-check.php";
 include "../config/database.php";
 
@@ -54,7 +54,7 @@ if ($comp_res) {
     <!-- CSS Dependencies -->
     <link rel="stylesheet" href="../assets/css/global.css?v=<?= filemtime(__DIR__ . '/../assets/css/global.css') ?>">
     <link rel="stylesheet" href="../assets/css/navbar.css?v=<?= filemtime(__DIR__ . '/../assets/css/navbar.css') ?>">
-    <link rel="stylesheet" href="../assets/css/chat-ai.css?v=<?= filemtime(__DIR__ . '/../assets/css/chat-ai.css') ?>">
+    <link rel="stylesheet" href="../assets/css/debate-arena.css?v=<?= filemtime(__DIR__ . '/../assets/css/debate-arena.css') ?>">
     
     <!-- Material Symbols for Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -76,7 +76,7 @@ if ($comp_res) {
 
                 <!-- Info Lomba Terpilih -->
                 <div id="compCardContainer">
-                    <!-- Dinamis via chat-ai.js -->
+                    <!-- Dinamis via debate-arena.js -->
                 </div>
 
                 <!-- Riwayat Diskusi Scroll List -->
@@ -92,7 +92,7 @@ if ($comp_res) {
                     </div>
                     
                     <div id="historyScroll">
-                        <!-- Daftar Diskusi dari LocalStorage via chat-ai.js -->
+                        <!-- Daftar Diskusi dari LocalStorage via debate-arena.js -->
                     </div>
                 </div>
 
@@ -124,7 +124,7 @@ if ($comp_res) {
 
                 <!-- Chat Feed Messages -->
                 <div class="chat-feed" id="chatFeed">
-                    <!-- Obrolan dirender di sini via chat-ai.js -->
+                    <!-- Obrolan dirender di sini via debate-arena.js -->
                 </div>
 
                 <!-- Input Area obrolan -->
@@ -167,7 +167,7 @@ if ($comp_res) {
 
             <!-- Scrollable list -->
             <div class="modal-list" id="modalList">
-                <!-- Diisi via chat-ai.js -->
+                <!-- Diisi via debate-arena.js -->
             </div>
 
             <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
@@ -187,7 +187,7 @@ if ($comp_res) {
     </script>
 
     <!-- JS Dependencies -->
-    <script src="../assets/js/chat-ai.js?v=<?= filemtime(__DIR__ . '/../assets/js/chat-ai.js') ?>"></script>
+    <script src="../assets/js/debate-arena.js?v=<?= filemtime(__DIR__ . '/../assets/js/debate-arena.js') ?>"></script>
 
 </body>
 </html>

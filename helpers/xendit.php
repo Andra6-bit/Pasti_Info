@@ -117,3 +117,46 @@ function refundXenditInvoice(string $invoice_id, int $amount, string $reason = '
 
     return callXenditAPI('/refunds', $payload);
 }
+
+/**
+ * Retrieves a Xendit Invoice.
+ *
+ * @param string $invoice_id The Xendit Invoice ID.
+ * @return array|false The invoice details or false on failure.
+ */
+function getXenditInvoice(string $invoice_id)
+{
+    $secretKey = $_ENV['XENDIT_SECRET_KEY'] ?? '';
+    if (empty($secretKey)) {
+        error_log('[Xendit Error] Secret Key is not configured in $_ENV.');
+        return false;
+    }
+
+    $url = 'https://api.xendit.co/v2/invoices/' . $invoice_id;
+    $ch  = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, $secretKey . ':');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // compatibility
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        error_log("[Xendit cURL Error] Get invoice failed: error={$curlError}");
+        return false;
+    }
+
+    $result = json_decode($response, true);
+    if ($httpCode >= 200 && $httpCode < 300) {
+        return $result;
+    }
+
+    error_log("[Xendit API Error] Get invoice failed: http_code={$httpCode} | response={$response}");
+    return false;
+}
+

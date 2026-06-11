@@ -4,7 +4,7 @@ $msg      = $_GET['msg'] ?? '';
 $msg_type = $_GET['msg_type'] ?? '';
 
 // Fetch competition data
-$all   = mysqli_query($koneksi, "SELECT * FROM competitions ORDER BY id DESC");
+$all   = mysqli_query($koneksi, "SELECT * FROM competitions WHERE submission_status = 'published' ORDER BY id DESC");
 $total = mysqli_num_rows($all);
 
 // Fetch categories for the form

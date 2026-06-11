@@ -1,7 +1,7 @@
 <?php
 $current_script = basename($_SERVER['SCRIPT_NAME']);
 $is_admin_dir = (strpos($current_dir ?? dirname($_SERVER['SCRIPT_NAME']), '/admin') !== false);
-$hide_top_nav_on_mobile = ($current_script === 'chat-ai.php' || $current_script === 'profile.php' || $is_admin_dir);
+$hide_top_nav_on_mobile = ($current_script === 'debate-arena.php' || $current_script === 'profile.php' || $is_admin_dir);
 
 $profile_picture = 'default_user.png';
 if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
@@ -33,7 +33,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
 
         <?php 
             $current_script = basename($_SERVER['SCRIPT_NAME']);
-            if ($current_script !== 'chat-ai.php') {
+            if ($current_script !== 'debate-arena.php') {
                 include 'floating-search.php';
             }
         ?>
@@ -63,7 +63,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
                 
                 <a href="<?= $home_link ?>" class="nav-beranda">Home</a>
                 <!-- 1-line reason: Rename the button to Debate AI and replace the robot icon with debate swords. -->
-                <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="nav-chat-ai">
+                <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/debate-arena.php' : 'debate-arena.php' ?>" class="nav-chat-ai">
                     <i class="ti ti-swords" style="font-size:16px;vertical-align:middle;margin-right:4px;"></i> Debate AI
                 </a>
                 <?php if (!$is_admin): ?>
@@ -104,7 +104,7 @@ if (isset($_SESSION['status']) && $_SESSION['status'] === "login") {
     </a>
     <?php if (isset($_SESSION['status']) && $_SESSION['status'] === "login"): ?>
         <!-- 1-line reason: Rename mobile button title to Debate AI and replace robot image with the swords icon. -->
-        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/chat-ai.php' : 'chat-ai.php' ?>" class="mobile-nav-item mobile-chat-ai" title="Debate AI">
+        <a href="<?= (strpos($current_dir, '/admin') !== false) ? '../pages/debate-arena.php' : 'debate-arena.php' ?>" class="mobile-nav-item mobile-chat-ai" title="Debate AI">
             <i class="ti ti-swords" style="font-size:22px;"></i>
         </a>
     <?php endif; ?>

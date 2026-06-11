@@ -164,9 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } while ($uid_exists);
 
             $stmt = mysqli_prepare($koneksi,
-                "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, category, description, registration_link, payment_status, approval_status, submission_status)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', 'approved', 'published')");
-            mysqli_stmt_bind_param($stmt, "ssssssisss", $uid, $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link);
+                "INSERT INTO competitions (uid, title, image, format, date_range, target_audience, registration_fee, description, registration_link, payment_status, approval_status, submission_status)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'paid', 'approved', 'published')");
+            mysqli_stmt_bind_param($stmt, "ssssssiss", $uid, $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $description, $registration_link);
             $ok = mysqli_stmt_execute($stmt);
             if ($ok) {
                 $new_comp_id = mysqli_insert_id($koneksi);
@@ -184,13 +184,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: ../admin/dashboard.php?tab=kelola&msg=" . urlencode($msg) . "&msg_type=" . urlencode($msg_type));
                 exit();
             } else {
-                throw new Exception("Failed to save data");
+                throw new Exception(mysqli_error($koneksi));
             }
         } else {
             // Edit — Update data
             $stmt = mysqli_prepare($koneksi,
-                "UPDATE competitions SET title=?, image=?, format=?, date_range=?, target_audience=?, registration_fee=?, category=?, description=?, registration_link=? WHERE id=?");
-            mysqli_stmt_bind_param($stmt, "sssssisssi", $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $category, $description, $registration_link, $post_id);
+                "UPDATE competitions SET title=?, image=?, format=?, date_range=?, target_audience=?, registration_fee=?, description=?, registration_link=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, "sssssissi", $title, $image_name, $format, $date_range, $target_audience, $registration_fee, $description, $registration_link, $post_id);
             $ok = mysqli_stmt_execute($stmt);
             if ($ok) {
                 // Update pivot categories table
@@ -206,14 +206,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $msg = "Competition successfully updated!";
                 $msg_type = "success";
             } else {
-                throw new Exception("Failed to update data");
+                throw new Exception(mysqli_error($koneksi));
             }
         }
     } catch (Throwable $e) {
         if (!empty($new_img) && file_exists("../assets/images/" . $new_img)) {
             unlink("../assets/images/" . $new_img);
         }
-        $msg = "Failed to save data";
+        $msg = "Failed to save data: " . $e->getMessage();
         $msg_type = "error";
     }
 

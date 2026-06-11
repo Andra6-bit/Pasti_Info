@@ -28,7 +28,7 @@ $referrer = trim($_POST['referrer'] ?? '');
 $parsed = parse_url($referrer);
 $host = $parsed['host'] ?? '';
 $path = $parsed['path'] ?? '';
-$allowed_basenames = ['/', '/index.php', '/pages/home.php', '/pages/profile.php', '/pages/competition-details.php', '/pages/auth.php', '/pages/chat-ai.php'];
+$allowed_basenames = ['/', '/index.php', '/pages/home.php', '/pages/profile.php', '/pages/competition-details.php', '/pages/auth.php', '/pages/debate-arena.php'];
 $is_valid_referrer = false;
 if (empty($host) || $host === 'localhost' || $host === '127.0.0.1') {
     $clean_path = $path;
